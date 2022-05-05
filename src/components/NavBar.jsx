@@ -11,41 +11,62 @@ const Container = styled.div`
 `
 
 const Wrapper = styled.div`
-    padding: 30px 100px;
+    padding-left: 100px;
+    padding-right: 100px;
+    height: 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 
 `
-
+// Left Side Container
 const Left = styled.div`
     flex: 1;
     display: flex;
     align-items: center;
 `
+// Center Side Container
 const Center = styled.div`
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+
 `
+// Right Side Container
 const Right = styled.div`
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: flex-end;
 
+
 `
+// Left Side Menu Designt
+
+const MenuItemContainer = styled.div`
+    cursor: pointer;
+    margin-right: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 80px;
+    border-bottom: ${(props) => ((props.allcat === true) ? '2px solid #5ECE7B' : '')} ;
+`
+
 const MenuItem = styled.div`
     font-family: 'Raleway';
     font-size: 16px;
     font-weight: 400;
-    cursor: pointer;
-    margin-right: 32px;
+    font-size: ${(props) => ((props.allcat === true) ? '16px' : '')} ;
+    color: ${(props) => ((props.allcat === true) ? '#5ECE7B' : '')} ;
 
 `
-// icon
+
+
+// Center logo (icons)
 const MainImage = styled.img`
     position: relative;
     top: 0;
@@ -54,8 +75,9 @@ const MainImage = styled.img`
 `
 const BackGroundicon = styled.img`
     position: absolute;
-    top: 28px;
+    top: 23px;
 `
+// Right Side design
 // Currency Change Toggle
 const DropDownConatiner = styled.div`
     height: auto;
@@ -70,6 +92,7 @@ const DownIcon = styled.img`
     transform: rotate(${(props) => ((props.rotate === true) ? 0 : '')});
 `
 const DropDownHeader = styled.div`
+    margin-right: 10px;
 `
 const DropDownListContainer = styled.div`
     display: flex;
@@ -112,6 +135,7 @@ const CartIconContainer = styled.div`
     align-items: center;
     flex-direction: column;
     cursor: pointer;
+    position: relative;
 
 `
 const CartIcon = styled.img``
@@ -126,15 +150,25 @@ const CirclesConatiner = styled.div`
 `
 const CircleIcon = styled.img``
 
+const CartCard = styled.div`
+height: 677px;
+width: 325px;
+border-radius: 0px;
+padding: 32px, 16px, 32px, 16px;
+position: absolute;
+border: 1px solid black;
+margin-right: 300px;
+margin-top: 50px;
+`
 
-
-// Class Component
+// Class Component For our Navbar
 class Navbar extends Component {
     constructor(props){
         super(props);
-        this.state = {value: 'USD',
+        this.state = {
                       isOpen: false,
-                      arrow: false
+                      arrow: false,
+                      cart: false,
                     }
         this.handleChange= this.handleChange.bind(this)
     }
@@ -161,15 +195,49 @@ class Navbar extends Component {
 
                 }
 
+                // Toggle cart
+                const carttoggle = () => {
+                    const BoolValue = this.state.cart
+                    if(BoolValue){
+                        this.setState({cart: false, })
+                    }
+                    else{
+                        this.setState({cart: true, })
+
+                    }
+                }
+
+                // Function to show active tab
+                let {allcat, clothescat, techcat } = false;
+
+                const activetab = () => {
+                    const currentcategory = this.props.category
+                    if (currentcategory === "all"){
+                        allcat = true;
+                    }
+                    else if (currentcategory === "clothes"){
+                        clothescat = true;
+                    }
+                    else {
+                        techcat = true;
+                    }
+                }
+                activetab()
+
 
         return (
             <Container>
                 <Wrapper>
-                    <Left>
-                        <MenuItem>ALL</MenuItem>
-                        <MenuItem>CLOTHES</MenuItem>
-                        <MenuItem>TECH</MenuItem>
-
+                    <Left >
+                    <MenuItemContainer allcat={allcat} >
+                        <MenuItem allcat={allcat} >ALL </MenuItem>
+                    </MenuItemContainer>
+                    <MenuItemContainer allcat={clothescat} >
+                        <MenuItem allcat={clothescat}  >CLOTHES </MenuItem>
+                    </MenuItemContainer>
+                    <MenuItemContainer allcat={techcat}  >
+                        <MenuItem allcat={techcat}  >TECH </MenuItem>
+                    </MenuItemContainer>
                     </Left>
                     <Center>
                         <MainImage src='/assets/svg_3.svg' />
@@ -189,14 +257,16 @@ class Navbar extends Component {
                             </DropDownListContainer>
                             }
                         </DropDownConatiner>
-                        <CartIconContainer>
+                        <CartIconContainer onClick={carttoggle}>
                             <CartIcon src='/assets/Vector2.svg' />
                             <CirclesConatiner>
                                 <CircleIcon src='/assets/Vector3.svg'/>
                                 <CircleIcon src='/assets/Vector3.svg'/>
                             </CirclesConatiner>
-                        </CartIconContainer>
+                            {(this.state.cart === true)&&
+                             <CartCard/>}
 
+                        </CartIconContainer>
                     </Right>
                 </Wrapper>
 
