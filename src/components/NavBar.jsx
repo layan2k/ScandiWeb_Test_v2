@@ -2,7 +2,10 @@
 
 // Imports
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components'
+
 
 // Styling
 const Container = styled.div`
@@ -161,6 +164,7 @@ margin-right: 300px;
 margin-top: 50px;
 `
 
+
 // Class Component For our Navbar
 class Navbar extends Component {
     constructor(props){
@@ -170,13 +174,17 @@ class Navbar extends Component {
                       arrow: false,
                       cart: false,
                     }
-        this.handleChange= this.handleChange.bind(this)
     }
-    // Handle currency change
-    handleChange(event) {
-        this.setState({value: event.target.value});
-        alert.log(event)
+    // Change currency Handler
+    changeCurrency = (data) => {
+        this.props.changeCurrentCurrency(data)
     }
+    // Change Category Handler
+    changeCategory = (data) => {
+        this.props.changeCurrentCategory(data)
+    }
+
+
 
 
     render() {
@@ -189,7 +197,7 @@ class Navbar extends Component {
                         this.setState({isOpen: false, arrow: false})
                     }
                     else{
-                        this.setState({isOpen: true, arrow: true})
+                        this.setState({isOpen: true, arrow: true, cart: false})
 
                     }
 
@@ -202,7 +210,7 @@ class Navbar extends Component {
                         this.setState({cart: false, })
                     }
                     else{
-                        this.setState({cart: true, })
+                        this.setState({cart: true, isOpen: false, arrow: false})
 
                     }
                 }
@@ -225,34 +233,68 @@ class Navbar extends Component {
                 activetab()
 
 
+                // Function that get the current set Currency from the reducer
+                // And Sets the current symbol on Display
+                const displayCurrency = () =>{
+                    const currentCurrency = this.props.currency
+                    let symbol = " "
+                    // Switch Satement to decide which text to display
+                    switch (currentCurrency.currency) {
+                        case "USD":
+                            symbol = "$"
+                            break;
+                        case "GBP":
+                            symbol = "£"
+                        break
+                        case "AUD":
+                            symbol= "A$"
+                        break
+                        case "JPY":
+                            symbol = "¥"
+                        break
+                        case "RUB":
+                            symbol = "₽"
+                        break
+                        default:
+                            symbol = "$";
+                    }
+                    return symbol
+                }
+
+            const displayTextCurrency = displayCurrency()
+
+
         return (
             <Container>
                 <Wrapper>
                     <Left >
-                    <MenuItemContainer allcat={allcat} >
-                        <MenuItem allcat={allcat} >ALL </MenuItem>
+                    <MenuItemContainer allcat={allcat} onClick={()=>this.changeCategory("all")} >
+                        <MenuItem allcat={allcat} > ALL </MenuItem>
                     </MenuItemContainer>
-                    <MenuItemContainer allcat={clothescat} >
-                        <MenuItem allcat={clothescat}  >CLOTHES </MenuItem>
+                    <MenuItemContainer allcat={clothescat} onClick={()=>this.changeCategory("clothes")}  >
+                        <MenuItem allcat={clothescat}  > CLOTHES </MenuItem>
                     </MenuItemContainer>
-                    <MenuItemContainer allcat={techcat}  >
-                        <MenuItem allcat={techcat}  >TECH </MenuItem>
+                    <MenuItemContainer allcat={techcat} onClick={()=>this.changeCategory("tech")}  >
+                        <MenuItem allcat={techcat}> TECH </MenuItem>
                     </MenuItemContainer>
                     </Left>
+                    <Link to={'/'}>
                     <Center>
                         <MainImage src='/assets/svg_3.svg' />
                         <BackGroundicon src='/assets/svg_2.svg' />
                     </Center>
+                    </Link>
                     <Right>
                         <DropDownConatiner onClick={toggling} >
-                            <DropDownHeader>$ <DownIcon src='/assets/Vector.svg' rotate = {this.state.arrow}/></DropDownHeader>
+                            <DropDownHeader>{displayTextCurrency} <DownIcon src='/assets/Vector.svg' rotate = {this.state.arrow}/></DropDownHeader>
                             {(this.state.isOpen === true)&&
                             <DropDownListContainer>
                                 <DropDownList >
-                                    <ListItem value="USD" >$ USD</ListItem>
-                                    <ListItem value="GBP" >£ GBP</ListItem>
-                                    <ListItem value="RUB" >₽ RUB</ListItem>
-                                    <ListItem value="AUD" >A$ AUD</ListItem>
+                                    <ListItem value="USD" onClick={()=>this.changeCurrency('USD')} >$ USD</ListItem>
+                                    <ListItem value="GBP" onClick={()=>this.changeCurrency('GBP')}  >£ GBP</ListItem>
+                                    <ListItem value="AUD" onClick={()=>this.changeCurrency('AUD')}  >A$ AUD</ListItem>
+                                    <ListItem value="JPY" onClick={()=>this.changeCurrency('JPY')}  >¥ JPY</ListItem>
+                                    <ListItem value="RUB" onClick={()=>this.changeCurrency('RUB')}  >₽ RUB</ListItem>
                                 </DropDownList>
                             </DropDownListContainer>
                             }
@@ -275,4 +317,22 @@ class Navbar extends Component {
     }
 }
 
-export default Navbar;
+
+const mapStateProps = (state) => {
+    return{
+        currency : state.currency
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return{
+            changeCurrentCurrency : (data) => {
+                dispatch({type: "CHANGE_CURRENCY", data: data})
+            },
+            changeCurrentCategory : (data)=>{
+                dispatch({type: "CHANGE_CATEGORY", data: data})
+            }
+        }
+    }
+
+export default connect(mapStateProps, mapDispatchToProps)(Navbar)

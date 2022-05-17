@@ -1,7 +1,7 @@
 // Get Category, expects an id to passed into the fuction to work
 import {client, Field, Query} from '@tilework/opus'
 
-export const GetCatergory = async (categoryitem) => {
+export const GetCategory = async (categoryitem) => {
     try {
         client.setEndpoint('http://localhost:4000/graphql')
         const query = new Query('category')
@@ -9,7 +9,7 @@ export const GetCatergory = async (categoryitem) => {
         .addField('name')
         .addField(
             new Field('products')
-            .addFieldList(['id', 'name', 'inStock', "gallery"])
+            .addFieldList(['id', 'name', 'inStock', "gallery", 'brand',])
             .addField(
                 new Field('prices')
                 .addField(
