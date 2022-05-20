@@ -2,12 +2,13 @@
 // Imports
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components'
-import BigImage from '../components/BigImage';
-import MiniImageCard from '../components/MiniImageCard';
-import PDPOptions from '../components/PDPOptions';
-import { getProductsById } from '../Queries/getProductById';
+import BigImage from '../components/ProductPageComponents/BigImage';
+import MiniImageCard from '../components/ProductPageComponents/MiniImageCard';
+import PDPOptions from '../components/ProductPageComponents/PDPOptions';
+import { getProductsById } from '../queries/getProductById';
+import { addToCart } from '../redux/action/actions';
 
 // Main Comtainer
 const Container = styled.div`
@@ -43,6 +44,7 @@ margin-left: 82px;
 
 `
 const Title = styled.div`
+  color: #1D1F22;
   font-family: 'Raleway';
   font-size: 30px;
   font-weight: 600;
@@ -87,6 +89,28 @@ const AddToButton = styled.div`
   color: white;
   cursor: pointer;
 `
+const BackButton = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 16px;
+  font-family: 'Raleway';
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+  text-transform: uppercase;
+  background-color:#1D1F22;
+  color: white;
+  cursor: pointer;
+  &:active{
+    background-color: #5ECE7B;
+  }
+  &:hover{
+
+  }
+
+`
 const Desc = styled.div`
   margin-top: 40px;
   font-family: 'Roboto';
@@ -96,10 +120,11 @@ const Desc = styled.div`
 `
 
 
-// Get id from router Custom Functiom
+// Get id and useNavigate from router Custom Functiom
 const withParams = (Component) =>{
-  return props => <Component {...props} params={useParams()} />
+  return props => <Component {...props} params={useParams()} navigate={useNavigate()} />
 }
+
 
 // Class Component entry
 class ProductPage extends Component {
@@ -110,14 +135,22 @@ class ProductPage extends Component {
       images: [],
       position: 0,
     }
+    this.fetchData = this.fetchData.bind(this)
+  }
+
+  fetchData = async() => {
+    const {id}  = this.props.params
+    const response = await getProductsById(id).catch(err=> console.log(err))
+    this.setState({
+      data: response.product,
+      images: response.product.gallery
+    })
+
   }
   // API Product Call byProduct ID , require id as an input
- async componentDidMount () {
-   const {id}  = this.props.params
-   await getProductsById(id).then(res => res.product).then(product => this.setState({
-    data: product,
-    images: product.gallery,
-}))}
+ componentDidMount () {
+   this.fetchData()
+ }
 
 
   render() {
@@ -157,10 +190,15 @@ class ProductPage extends Component {
     PriceText = prices[displayCurrency].currency.symbol+prices[displayCurrency].amount
   }
   else{
-    console.log("non array")
+    console.log("loading...")
   }
 
+  const SendCart = (data) =>{
+    this.props.addToCart(data)
+    this.props.navigate('/cart')
+  }
 
+  if(data.inStock === true){
     return (
       <Container>
         <Wrapper>
@@ -179,33 +217,78 @@ class ProductPage extends Component {
           </Left>
           {/* Center */}
           <Center>
-            <BigImage ima={images[this.state.position]}/>
+            <BigImage data={data} ima={images[this.state.position]}/>
 
           </Center>
           {/* Right Side */}
           <Right>
             <Title>{data.brand}</Title>
             <ProductName>{data.name}</ProductName>
-            <PDPOptions data={data.attributes} />
+            <PDPOptions data={data.attributes} iddet={data.id} />
             <PrizeHeading>PRICE:</PrizeHeading>
             <Price>
               {PriceText}
             </Price>
-            <AddToButton>ADD TO CART</AddToButton>
+            <AddToButton onClick={()=> SendCart(data.id)}>ADD TO CART</AddToButton>
             <Desc>{description.replace("<p>", "").replace("</p>", "").replace("<h1>", "").replace("</h1>", "")}</Desc>
 
           </Right>
         </Wrapper>
       </Container>
     )
+  }else{
+    return(
+      <Container>
+      <Wrapper>
+        {/* Left Side */}
+        <Left>
+          {images.map((data, i)=> {
+            return(
+              <LeftImg key={i} onClick={()=>this.setState({
+                position: i
+              })}>
+                <MiniImageCard key={i} data={data} />
+              </LeftImg>
+            )
+          }
+          )}
+        </Left>
+        {/* Center */}
+        <Center>
+          <BigImage data={data} ima={images[this.state.position]}/>
+
+        </Center>
+        {/* Right Side */}
+        <Right>
+          <Title>{data.brand}</Title>
+          <ProductName>{data.name}</ProductName>
+          <PrizeHeading>PRICE:</PrizeHeading>
+          <Price>
+
+            {PriceText}
+          </Price>
+          <BackButton onClick={()=> this.props.navigate('/')} >BACK TO SHOP ↰</BackButton>
+          <Desc><p>Product is Currently Unavailable</p></Desc>
+
+        </Right>
+      </Wrapper>
+    </Container>
+    )
   }
+}
 }
 
 // Export Component
 const mapStateProps = (state) => {
   return{
-      currency : state.currency
+      currency : state.currency,
+      products: state.shop.product
+  }
+}
+const mapDispatchToProps = dispatch => {
+  return{
+    addToCart : (id) => dispatch(addToCart(id))
   }
 }
 
-export default connect(mapStateProps)(withParams(ProductPage))
+export default connect(mapStateProps, mapDispatchToProps)(withParams(ProductPage))

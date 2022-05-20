@@ -15,7 +15,7 @@ const CardBox = styled.div`
     padding: 16px;
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 0;
     cursor: pointer;
     transition: all 0.3s ease-in-out ;
     &:hover{
@@ -41,7 +41,7 @@ const Title = styled.h2`
 const Price = styled.h2`
     font-family: "raleway";
     color: #1D1F22;
-    font-style: 18px;
+    font-size: 18px;
     font-weight: 500;
     text-align: left;
 
@@ -95,7 +95,7 @@ const DisabledTitle = styled.h2`
 const DisabledPrices = styled.h2`
     font-family: "raleway";
     color: #8D8F9A;
-    font-style: 18px;
+    font-size: 18px;
     font-weight: 500;
     text-align: left;
 `
@@ -150,10 +150,12 @@ class Card extends Component {
         else{
             return(
             <CardBoxDisabled>
+                <Link to={`product/${data.id}`} style={{textDecoration:"none"}}>
                 <DisableImage src={images[0]} />
                 <StockTitle>OUT OF STOCK</StockTitle>
                 <DisabledTitle>{data.name}</DisabledTitle>
                 <DisabledPrices>{prices[displayCurrency].currency.symbol+prices[displayCurrency].amount}</DisabledPrices>
+                </Link>
             </CardBoxDisabled>
             );
         }

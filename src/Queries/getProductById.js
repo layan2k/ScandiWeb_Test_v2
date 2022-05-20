@@ -1,10 +1,10 @@
 import {Query, client, Field}  from '@tilework/opus'
 
-export const getProductsById = (id) => {
+export const getProductsById = async (id) => {
     client.setEndpoint('http://localhost:4000/graphql')
     const query = new Query('product')
     .addArgument('id', 'String!', id)
-    .addFieldList(['id', 'name', 'gallery', 'description', 'category', 'brand'])
+    .addFieldList(['id', 'name', 'gallery', 'description', 'category', 'brand', 'inStock'])
     .addField(
         new Field('attributes')
         .addFieldList(['id', 'name', 'type'])
@@ -20,7 +20,7 @@ export const getProductsById = (id) => {
         )
         .addField('amount')
     )
-    const result = client.post(query)
+    const result = await client.post(query)
 
     return result
 }

@@ -1,14 +1,10 @@
-import { combineReducers, createStore } from "redux"
-import { CatergoryReducer } from "../reducers/CategoryReducer"
-import { CurrencyReducer } from "../reducers/CurrencyReducer"
+import {createStore, applyMiddleware } from "redux"
+import { mainReducer } from "../reducers/rootReducers"
+import { composeWithDevTools } from 'redux-devtools-extension';
+import thunk from 'redux-thunk'
 
+const middleware = [thunk]
 
-const reducer = combineReducers({
-    currency : CurrencyReducer,
-    category: CatergoryReducer,
-})
-const initialState = {}
-
-const store = createStore(reducer, initialState)
+const store = createStore(mainReducer,composeWithDevTools(applyMiddleware(...middleware)) )
 
 export default store

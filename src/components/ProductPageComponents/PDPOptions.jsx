@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import TextAttrBox from './subMiniComponents/textAttrBox';
+import TextAttrBox from './AttrBox';
 
 
 const Container = styled.div`
@@ -17,6 +17,7 @@ class PDPOptions extends Component {
     render() {
 
         const data = this.props.data
+        const id = this.props.iddet
         let verifiedArray = []
         if(Array.isArray(data)){
             verifiedArray = data
@@ -25,7 +26,7 @@ class PDPOptions extends Component {
         }
         return (
             <Container>
-                {verifiedArray.map((data, i)=> <TextAttrBox key={i}  data={data.items} name={data.name}/>
+                {verifiedArray.map((data, i)=> <TextAttrBox key={i}  data={data.items} type={data.type} name={data.name} id={id}/>
                 )}
             </Container>
         );

@@ -1,9 +1,10 @@
 //  PLP - product listing page
 // Imports
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
-import Card from '../components/ProductCard'
-import { GetCategory } from '../Queries/GetCategory'
+import Card from '../components/ProductsMainPage/ProductCard'
+import { GetCategory } from '../queries/GetCategory'
 
 // Main Container
 const Container = styled.div`
@@ -19,7 +20,6 @@ const Wrapper = styled.div `
 `
 // Category Name Heading
 const Header = styled.h2`
-    font-style: normal;
     font-weight: 400;
     font-size: 42px;
 `
@@ -44,7 +44,7 @@ const LoadingText = styled.span`
 `
 
 // Class Component
-export default class AllCategory extends Component {
+class AllCategory extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -55,19 +55,32 @@ export default class AllCategory extends Component {
 
 // Method to call our API Data
 
-async componentDidMount () {
-    await GetCategory(this.props.category).then(res => res.category).then(category => this.setState({
-        data: category.products,
-        isLoading:false
-    }))
+    fetchProducts = async () => {
+        const response = await GetCategory(this.props.category).catch((err)=> {
+            console.log(err)
+        })
+        this.setState({
+            data: response.category.products,
+            isLoading:false
+
+        })
+    }
+
+    fetchProductsForStore = async () => {
+        const response = await GetCategory("all").catch(err => console.log(err))
+        this.props.addProducts(response.category.products)
+    }
+
+
+ componentDidMount () {
+    this.fetchProducts()
+    this.fetchProductsForStore()
 }
 
     async componentDidUpdate (prevProps) {
         if(this.props.category !== prevProps.category){
-        await GetCategory(this.props.category).then(res => res.category).then(category => this.setState({
-            data: category.products,
-            isLoading:false
-        }))}
+            this.fetchProducts()
+        }
     }
 
     setImage = (position) =>{
@@ -100,3 +113,13 @@ async componentDidMount () {
       }
   }
 }
+
+const mapDispatchToProps = (dispatch) => {
+    return{
+            addProducts : (data) => {
+                dispatch({type: "ADD_PRODUCTS", data: data})
+    }
+}
+}
+
+export default connect(null,mapDispatchToProps)(AllCategory)

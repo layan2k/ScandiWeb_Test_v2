@@ -14,8 +14,7 @@ const Container = styled.div`
 `
 
 const Wrapper = styled.div`
-    padding-left: 100px;
-    padding-right: 100px;
+    padding: 0 100px;
     height: 80px;
     display: flex;
     justify-content: space-between;
@@ -56,15 +55,15 @@ const MenuItemContainer = styled.div`
     justify-content: center;
     flex-direction: column;
     height: 80px;
-    border-bottom: ${(props) => ((props.allcat === true) ? '2px solid #5ECE7B' : '')} ;
+    border-bottom: ${(props) => ((props.allcat) ? '2px solid #5ECE7B' : '')} ;
 `
 
 const MenuItem = styled.div`
     font-family: 'Raleway';
     font-size: 16px;
     font-weight: 400;
-    font-size: ${(props) => ((props.allcat === true) ? '16px' : '')} ;
-    color: ${(props) => ((props.allcat === true) ? '#5ECE7B' : '')} ;
+    font-size: ${(props) => ((props.allcat) ? '16px' : '')} ;
+    color: ${(props) => ((props.allcat) ? '#5ECE7B' : '')} ;
 
 `
 
@@ -86,13 +85,14 @@ const DropDownConatiner = styled.div`
     height: auto;
     cursor: pointer;
     position: relative;
+    z-index: 1;
 `
 
 const DownIcon = styled.img`
     transform: rotate(180deg);
     overflow: hidden;
     transition: all 0.3s ease-in-out;
-    transform: rotate(${(props) => ((props.rotate === true) ? 0 : '')});
+    transform: rotate(${(props) => ((props.rotatearrow) ? 0 : '')});
 `
 const DropDownHeader = styled.div`
     margin-right: 10px;
@@ -100,6 +100,7 @@ const DropDownHeader = styled.div`
 const DropDownListContainer = styled.div`
     display: flex;
     position: absolute;
+    background-color: white;
     transition: all 0.3s ease-in-out;
 `
 
@@ -162,6 +163,7 @@ position: absolute;
 border: 1px solid black;
 margin-right: 300px;
 margin-top: 50px;
+opacity: 1;
 `
 
 
@@ -174,6 +176,9 @@ class Navbar extends Component {
                       arrow: false,
                       cart: false,
                     }
+        this.wrapperRef = React.createRef()
+        this.cartRef = React.createRef()
+        this.handleClickOutside = this.handleClickOutside.bind(this)
     }
     // Change currency Handler
     changeCurrency = (data) => {
@@ -182,6 +187,28 @@ class Navbar extends Component {
     // Change Category Handler
     changeCategory = (data) => {
         this.props.changeCurrentCategory(data)
+    }
+
+    componentDidMount () {
+        document.addEventListener("mousedown", this.handleClickOutside)
+    }
+
+    componentWillUnmount () {
+        document.removeEventListener("mousedown", this.handleClickOutside)
+    }
+
+    handleClickOutside(event) {
+        if(this.wrapperRef && !this.wrapperRef.current.contains(event.target)){
+            this.setState({
+                isOpen: false,
+                arrow: false,
+            })
+        }
+        if( this.cartRef && ! this.cartRef.current.contains(event.target)){
+            this.setState({
+                cart: false
+            })
+        }
     }
 
 
@@ -285,9 +312,9 @@ class Navbar extends Component {
                     </Center>
                     </Link>
                     <Right>
-                        <DropDownConatiner onClick={toggling} >
-                            <DropDownHeader>{displayTextCurrency} <DownIcon src='/assets/Vector.svg' rotate = {this.state.arrow}/></DropDownHeader>
-                            {(this.state.isOpen === true)&&
+                        <DropDownConatiner onClick={toggling} ref={this.wrapperRef}>
+                            <DropDownHeader>{displayTextCurrency} <DownIcon src='/assets/Vector.svg' rotatearrow = {this.state.arrow}/></DropDownHeader>
+                            {(this.state.isOpen)&&
                             <DropDownListContainer>
                                 <DropDownList >
                                     <ListItem value="USD" onClick={()=>this.changeCurrency('USD')} >$ USD</ListItem>
@@ -299,13 +326,13 @@ class Navbar extends Component {
                             </DropDownListContainer>
                             }
                         </DropDownConatiner>
-                        <CartIconContainer onClick={carttoggle}>
+                        <CartIconContainer onClick={carttoggle} ref={this.cartRef} >
                             <CartIcon src='/assets/Vector2.svg' />
                             <CirclesConatiner>
                                 <CircleIcon src='/assets/Vector3.svg'/>
                                 <CircleIcon src='/assets/Vector3.svg'/>
                             </CirclesConatiner>
-                            {(this.state.cart === true)&&
+                            {(this.state.cart)&&
                              <CartCard/>}
 
                         </CartIconContainer>
