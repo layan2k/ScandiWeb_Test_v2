@@ -1,12 +1,8 @@
-
-import React, { Component } from 'react'
-import Home from './pages';
+import React, { Component } from 'react';
+import Home from './pages/Home.jsx';
 
 export default class App extends Component {
-  render() {
-    return (
-      <Home />
-    )
-  }
+    render() {
+        return <Home />;
+    }
 }
-

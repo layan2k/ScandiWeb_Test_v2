@@ -1,16 +1,16 @@
 const initialState = {
-    category: "all"
-}
+    category: 'all'
+};
 
-export const CatergoryReducer =(state=initialState, action) => {
-    switch (action.type){
-        case "CHANGE_CATEGORY":{
-            return{
-                category: action.data,
-            }
+export const CatergoryReducer = (state = initialState, action) => {
+    switch (action.type) {
+        case 'CHANGE_CATEGORY': {
+            return {
+                category: action.data
+            };
         }
-        default :{
-            return state
+        default: {
+            return state;
         }
     }
-}
+};

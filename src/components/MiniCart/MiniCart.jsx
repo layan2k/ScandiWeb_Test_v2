@@ -1,80 +1,88 @@
+// MiniCart Main Components
+// Imports
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import HandleCartAttributes from '../components/CartComponents/handleCartAttributes';
-import CartPrices from '../components/CartComponents/CartPrices';
-import ImageGallery from '../components/CartComponents/ImageGallery';
-import { adjustQty, removeFromCart } from '../redux/action/actions';
+import { adjustQty, removeFromCart } from '../../redux/action/actions';
+import HandleMiniCartAttri from './handleMiniCartAttri';
+import MiniCartImageGallery from './MiniCartImageGallery';
+import MiniCartPrices from './MiniCartPrices';
 
+// Container
 const Container = styled.div`
-    padding: 0 100px;
-    padding-top: 80px;
     display: flex;
     flex-direction: column;
     height: auto;
-    padding-bottom: 274px;
-    @media (max-width: 1400px) {
-        padding: 0 95px;
-        padding-bottom: 274px;
-        padding-top: 80px;
-    }
+    padding-bottom: 32px;
+    padding-left: 8px;
+    padding-right: 5px;
+    max-width: 325px;
 `;
+// Header AKA My Bag Title
 const Header = styled.h1`
-    font-size: 32px;
+    font-size: 16px;
     font-weight: 700;
     display: flex;
     align-items: center;
 `;
-
+// Items Container holds our Cart Items
 const ItemsContainer = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 55px;
 `;
-
+// Our Cart Item
 const CartItemContainer = styled.div`
     height: auto;
     width: 100%;
-    border-top: 1px solid #e5e5e5;
     display: flex;
-    justify-content: space-between;
 `;
+// Left Side Container Which hold thes the Product Information
 const LeftItems = styled.div`
     display: flex;
+    flex: 1;
     flex-direction: column;
+    max-width: 136px;
 `;
+// Our Product Band
 const ItemHeader = styled.div`
-    margin-top: 24px;
-    font-size: 30px;
-    font-weight: 600;
-`;
-const ItemProduct = styled.div`
     margin-top: 16px;
-    font-size: 30px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 300;
 `;
-
+// Product Name
+const ItemProduct = styled.div`
+    margin-top: 8px;
+    font-size: 16px;
+    font-weight: 300;
+`;
+// Product Price
 const ItemPrice = styled.div`
     margin-top: 20px;
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 500;
 `;
+// Our Right Container that contains the Picture and Quantity Controls
 const RightContainer = styled.div`
     display: flex;
-    justify-content: flex-end;
     align-items: center;
+    justify-content: flex-end;
 `;
+// Right SIde Container Wrapper
 const RightItems = styled.div`
+    flex: 1;
     display: flex;
     height: 100%;
     align-items: center;
-    justify-content: center;
 `;
+// Container with Our Quantity Controls
 const AdjPrice = styled.div`
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
 `;
+// Add Quantity Button
 const PlusBox = styled.div`
     display: flex;
     align-items: center;
@@ -87,6 +95,8 @@ const PlusBox = styled.div`
     border: 1px solid #1d1f22;
     cursor: pointer;
 `;
+
+// Remove Quantity Button
 const MinusBox = styled.div`
     display: flex;
     align-items: center;
@@ -117,15 +127,10 @@ const Gallery = styled.div`
 const Total = styled.div`
     margin-top: 24px;
     width: 100%;
-    border-top: 1px solid #e5e5e5;
     display: flex;
 `;
 const TotalProperties = styled.div`
     font-size: 24px;
-`;
-const TPropertyItem = styled.div`
-    font-weight: 400;
-    margin-top: 8px;
 `;
 const TotalValueHeading = styled.div`
     font-weight: 500;
@@ -133,21 +138,45 @@ const TotalValueHeading = styled.div`
 `;
 
 const TotalValues = styled.div`
-    font-size: 24px;
+    font-size: 16px;
     font-weight: 700;
     margin-left: 20px;
+    color: #1d1f22;
 `;
 const TotalValueItems = styled.div`
-    margin-top: 8px;
+    margin-top: 12px;
+    color: #1d1f22; ;
+`;
+const BottomButtons = styled.div`
+    padding: 0 18.5px;
+    display: flex;
+    margin-top: 16px;
+    justify-content: space-between;
 `;
 
-const OrderButton = styled.div`
-    margin-top: 16px;
+const ViewBagButton = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0 32px;
-    width: 279px;
+    width: 140px;
+    height: 43px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d1f22;
+    background: none;
+    border: 1px solid #1d1f22;
+    cursor: pointer;
+`;
+
+const OrderButton = styled.div`
+    display: flex;
+    margin-left: 12px;
+    justify-content: center;
+    align-items: center;
+    padding: 0 32px;
+    width: 140px;
     height: 43px;
     text-align: center;
     font-size: 14px;
@@ -160,7 +189,7 @@ const OrderButton = styled.div`
     }
 `;
 
-class Cart extends Component {
+class MiniCart extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -308,7 +337,7 @@ class Cart extends Component {
 
         return (
             <Container>
-                <Header>CART</Header>
+                <Header>My Bag, {this.state.cartCount} items</Header>
                 {cart.map((data, i) => (
                     <ItemsContainer key={i}>
                         <CartItemContainer>
@@ -316,12 +345,12 @@ class Cart extends Component {
                                 <ItemHeader>{data.brand}</ItemHeader>
                                 <ItemProduct>{data.name}</ItemProduct>
                                 <ItemPrice>
-                                    <CartPrices
+                                    <MiniCartPrices
                                         data={data.prices}
                                         qty={data.qty}
                                     />
                                 </ItemPrice>
-                                <HandleCartAttributes id={data.id} />
+                                <HandleMiniCartAttri id={data.id} />
                             </LeftItems>
                             <RightContainer>
                                 <RightItems>
@@ -347,7 +376,9 @@ class Cart extends Component {
                                         </MinusBox>
                                     </AdjPrice>
                                     <Gallery>
-                                        <ImageGallery picsdata={data.gallery} />
+                                        <MiniCartImageGallery
+                                            picsdata={data.gallery}
+                                        />
                                     </Gallery>
                                 </RightItems>
                             </RightContainer>
@@ -356,23 +387,20 @@ class Cart extends Component {
                 ))}
                 <Total>
                     <TotalProperties>
-                        <TPropertyItem>Tax 21%:</TPropertyItem>
-                        <TPropertyItem>Quantity:</TPropertyItem>
                         <TotalValueHeading>Total:</TotalValueHeading>
                     </TotalProperties>
                     <TotalValues>
-                        <TotalValueItems>
-                            {displayCurrency + this.state.tax}
-                        </TotalValueItems>
-                        <TotalValueItems>
-                            {this.state.cartCount}
-                        </TotalValueItems>
                         <TotalValueItems>
                             {displayCurrency + this.state.total}
                         </TotalValueItems>
                     </TotalValues>
                 </Total>
-                <OrderButton>ORDER</OrderButton>
+                <BottomButtons>
+                    <Link to="/cart" style={{ textDecoration: 'none' }}>
+                        <ViewBagButton>VIEW BAG</ViewBagButton>
+                    </Link>
+                    <OrderButton>CHECKOUT</OrderButton>
+                </BottomButtons>
             </Container>
         );
     }
@@ -398,4 +426,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateProps, mapDispatchToProps)(Cart);
+export default connect(mapStateProps, mapDispatchToProps)(MiniCart);

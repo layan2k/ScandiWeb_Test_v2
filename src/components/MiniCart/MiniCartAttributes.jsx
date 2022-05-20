@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { addColorAttri, addTextAttri } from '../../redux/action/actions';
 
 const Container = styled.div`
     display: flex;
@@ -12,11 +11,11 @@ const ItemContainer = styled.div`
 `;
 
 const MainHeading = styled.div`
-    margin-top: 10px;
+    margin-top: 8px;
     font-family: 'Raleway';
-    font-weight: 700;
-    font-size: 24px;
-    margin-bottom: 8px;
+    font-weight: 400;
+    font-size: 14px;
+    margin-bottom: 7px;
     text-transform: uppercase;
 `;
 const BoxContainer = styled.div`
@@ -25,26 +24,27 @@ const BoxContainer = styled.div`
 `;
 const Box = styled.div`
     font-family: 'Roboto Condensed', sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 400;
     border: 1px solid #1d1f22;
-    width: 63px;
-    height: 45px;
+    min-width: 24px;
+    width: auto;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 12px;
-    cursor: pointer;
+    margin-right: 8px;
     background-color: ${(props) =>
         props.current === true ? '#1D1F22' : 'white'};
     color: ${(props) => (props.current === true ? 'white' : 'black')};
     transition: all 0.3s ease-in-out;
     text-decoration: none;
+    cursor: pointer;
 `;
 const ColorConatiner = styled.div`
-    height: 36px;
-    width: 36px;
-    margin-right: 10px;
+    height: 20px;
+    width: 20px;
+    margin-right: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -53,13 +53,13 @@ const ColorConatiner = styled.div`
     transition: all 0.1s ease-in;
 `;
 const COlorBox = styled.div`
-    height: 32px;
-    width: 32px;
+    height: 16px;
+    width: 16px;
     cursor: pointer;
     background-color: ${(props) => props.background};
 `;
 
-class TextAttrBox extends Component {
+class MiniCartAttributes extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -67,7 +67,6 @@ class TextAttrBox extends Component {
             selectedColor: 0
         };
     }
-
     setAttributes = () => {
         const name = this.props.name;
         const attributes = this.props.attributes;
@@ -85,6 +84,14 @@ class TextAttrBox extends Component {
     componentDidMount() {
         this.setAttributes();
     }
+    componentDidUpdate(prevProps) {
+        if (
+            this.props.attributes !== prevProps.attributes ||
+            this.props.attributes !== prevProps.attributes
+        ) {
+            this.fetchProducts();
+        }
+    }
 
     render() {
         const data = this.props.data;
@@ -96,20 +103,6 @@ class TextAttrBox extends Component {
         } else {
             console.log('loading data...');
         }
-
-        const changeSizeStateIndex = (number, value) => {
-            const newid = `${name}+${this.props.id}`;
-            this.props.changeTextDetail(newid, number);
-            this.setState({
-                selectedText: number
-            });
-        };
-        const changeColorStateIndex = (number) => {
-            this.props.changeColorDetails(this.props.id, number);
-            this.setState({
-                selectedColor: number
-            });
-        };
 
         const activeColor = this.state.selectedColor;
         const activeText = this.state.selectedText;
@@ -123,7 +116,6 @@ class TextAttrBox extends Component {
                                 <Box
                                     title={info.displayValue}
                                     current={activeText === i ? true : false}
-                                    onClick={() => changeSizeStateIndex(i)}
                                     key={i}
                                 >
                                     {info.value}
@@ -139,7 +131,6 @@ class TextAttrBox extends Component {
                             {refinedata.map((info, i) => (
                                 <ColorConatiner
                                     current={activeColor === i ? true : false}
-                                    onClick={() => changeColorStateIndex(i)}
                                     key={i}
                                 >
                                     <COlorBox
@@ -162,15 +153,4 @@ const mapStateProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        changeTextDetail: (id, value) => {
-            dispatch(addTextAttri(id, value));
-        },
-        changeColorDetails: (id, value) => {
-            dispatch(addColorAttri(id, value));
-        }
-    };
-};
-
-export default connect(mapStateProps, mapDispatchToProps)(TextAttrBox);
+export default connect(mapStateProps)(MiniCartAttributes);

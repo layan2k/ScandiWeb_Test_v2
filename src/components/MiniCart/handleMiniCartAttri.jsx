@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { getProductsById } from '../../queries/getProductById';
-import CartAttributes from './CartAttributes';
+import MiniCartAttributes from './MiniCartAttributes';
 
 const Container = styled.div`
-    margin-top: 20px;
+    margin-top: 8px;
     display: flex;
     flex-direction: column;
 `;
@@ -36,7 +36,7 @@ class HandleCartAttributes extends Component {
         return (
             <Container>
                 {verifiedArray.map((data, i) => (
-                    <CartAttributes
+                    <MiniCartAttributes
                         key={i}
                         data={data.items}
                         type={data.type}

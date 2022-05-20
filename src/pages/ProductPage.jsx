@@ -1,9 +1,9 @@
 // Product Page
 // Imports
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components'
+import styled from 'styled-components';
 import BigImage from '../components/ProductPageComponents/BigImage';
 import MiniImageCard from '../components/ProductPageComponents/MiniImageCard';
 import PDPOptions from '../components/ProductPageComponents/PDPOptions';
@@ -12,283 +12,310 @@ import { addToCart } from '../redux/action/actions';
 
 // Main Comtainer
 const Container = styled.div`
-  height: auto;
-  margin-top: 80px;
-`
+    height: auto;
+`;
 // Wrapper
 const Wrapper = styled.div`
-  margin: 0 100px;
-  display: flex;
-  margin-bottom: 178px;
-`
+    padding: 0 100px;
+    padding-top: 73px;
+    padding-bottom: 178px;
+    display: flex;
+    @media (max-width: 1400px) {
+        padding: 0 95px;
+        padding-top: 73px;
+        padding-bottom: 178px;
+    }
+`;
 // Left Image Toggle Gallary Design
 const Left = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: auto;
-`
+    display: flex;
+    flex-direction: column;
+    height: auto;
+`;
 const LeftImg = styled.div`
-  cursor: pointer;
-  max-width: 100px;
-  margin-bottom: 32px;
-`
+    cursor: pointer;
+    max-width: 100px;
+    margin-bottom: 32px;
+`;
 // Center Image Design
 const Center = styled.div`
-  margin-left: 10px;
-`
+    margin-left: 10px;
+`;
 // Right Side Product Design
 const Right = styled.div`
-margin-left: 82px;
-  display: flex;
-  flex-direction: column;
-
-`
+    margin-left: 82px;
+    display: flex;
+    flex-direction: column;
+`;
 const Title = styled.div`
-  color: #1D1F22;
-  font-family: 'Raleway';
-  font-size: 30px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-`
+    color: #1d1f22;
+    font-family: 'Raleway';
+    font-size: 30px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+`;
 const ProductName = styled.div`
-  font-size: 30px;
-  font-weight: 400;
-  margin-top: 16px;
-  display: flex;
-  align-items: center;
-
-`
+    font-size: 30px;
+    font-weight: 400;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+`;
 
 const PrizeHeading = styled.div`
-  margin-top: 36px;
-  font-family: 'Roboto Condensed';
-  font-weight: 700;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-`
+    margin-top: 36px;
+    font-family: 'Roboto Condensed';
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+`;
 const Price = styled.div`
-  margin-top: 10px;
-  font-family: 'Raleway';
-  font-weight: 700;
-  font-size: 24px;
-`
+    margin-top: 10px;
+    font-family: 'Raleway';
+    font-weight: 700;
+    font-size: 24px;
+`;
 const AddToButton = styled.div`
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px 32px;
-  font-family: 'Raleway';
-  font-weight: 600;
-  font-size: 16px;
-  text-align: center;
-  text-transform: uppercase;
-  background-color:#5ECE7B;
-  color: white;
-  cursor: pointer;
-`
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 32px;
+    font-family: 'Raleway';
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    text-transform: uppercase;
+    background-color: #5ece7b;
+    color: white;
+    cursor: pointer;
+`;
 const BackButton = styled.div`
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px 16px;
-  font-family: 'Raleway';
-  font-weight: 600;
-  font-size: 16px;
-  text-align: center;
-  text-transform: uppercase;
-  background-color:#1D1F22;
-  color: white;
-  cursor: pointer;
-  &:active{
-    background-color: #5ECE7B;
-  }
-  &:hover{
-
-  }
-
-`
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 16px;
+    font-family: 'Raleway';
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    text-transform: uppercase;
+    background-color: #1d1f22;
+    color: white;
+    cursor: pointer;
+    &:active {
+        background-color: #5ece7b;
+    }
+    &:hover {
+    }
+`;
 const Desc = styled.div`
-  margin-top: 40px;
-  font-family: 'Roboto';
-  font-weight: 400;
-  font-size: 16px;
-  color: #1D1F22;
-`
-
+    margin-top: 40px;
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 16px;
+    color: #1d1f22;
+`;
 
 // Get id and useNavigate from router Custom Functiom
-const withParams = (Component) =>{
-  return props => <Component {...props} params={useParams()} navigate={useNavigate()} />
-}
-
+const withParams = (Component) => {
+    return (props) => (
+        <Component {...props} params={useParams()} navigate={useNavigate()} />
+    );
+};
 
 // Class Component entry
 class ProductPage extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      data: [],
-      images: [],
-      position: 0,
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: [],
+            images: [],
+            position: 0
+        };
+        this.fetchData = this.fetchData.bind(this);
     }
-    this.fetchData = this.fetchData.bind(this)
-  }
 
-  fetchData = async() => {
-    const {id}  = this.props.params
-    const response = await getProductsById(id).catch(err=> console.log(err))
-    this.setState({
-      data: response.product,
-      images: response.product.gallery
-    })
+    fetchData = async () => {
+        const { id } = this.props.params;
+        const response = await getProductsById(id).catch((err) =>
+            console.log(err)
+        );
+        this.setState({
+            data: response.product,
+            images: response.product.gallery
+        });
+    };
+    // API Product Call byProduct ID , require id as an input
+    componentDidMount() {
+        this.fetchData();
+    }
 
-  }
-  // API Product Call byProduct ID , require id as an input
- componentDidMount () {
-   this.fetchData()
- }
+    render() {
+        let description = '';
+        const data = this.state.data;
+        const images = this.state.images;
+        const prices = data.prices;
+        description = String(data.description);
 
-
-  render() {
-    let description = ''
-    const data = this.state.data
-    const images = this.state.images
-    const prices = data.prices
-    description = String(data.description)
-
-    const currentCurrency = () => {
-      const currentCurrency = this.props.currency
-      let currency = 0
-      switch (currentCurrency.currency) {
-          case "USD":
-              currency = 0
-              break;
-          case "GBP":
-              currency = 1
-          break
-          case "AUD":
-              currency= 2
-          break
-          case "JPY":
-              currency = 3
-          break
-          case "RUB":
-              currency = 4
-          break
-          default:
-              currency = 5
-      }
-      return currency
-  }
-  const displayCurrency = currentCurrency()
-  let PriceText = ''
-  if(Array.isArray(prices)){
-    PriceText = prices[displayCurrency].currency.symbol+prices[displayCurrency].amount
-  }
-  else{
-    console.log("loading...")
-  }
-
-  const SendCart = (data) =>{
-    this.props.addToCart(data)
-    this.props.navigate('/cart')
-  }
-
-  if(data.inStock === true){
-    return (
-      <Container>
-        <Wrapper>
-          {/* Left Side */}
-          <Left>
-            {images.map((data, i)=> {
-              return(
-                <LeftImg key={i} onClick={()=>this.setState({
-                  position: i
-                })}>
-                  <MiniImageCard key={i} data={data} />
-                </LeftImg>
-              )
+        const currentCurrency = () => {
+            const currentCurrency = this.props.currency;
+            let currency = 0;
+            switch (currentCurrency.currency) {
+                case 'USD':
+                    currency = 0;
+                    break;
+                case 'GBP':
+                    currency = 1;
+                    break;
+                case 'AUD':
+                    currency = 2;
+                    break;
+                case 'JPY':
+                    currency = 3;
+                    break;
+                case 'RUB':
+                    currency = 4;
+                    break;
+                default:
+                    currency = 5;
             }
-            )}
-          </Left>
-          {/* Center */}
-          <Center>
-            <BigImage data={data} ima={images[this.state.position]}/>
+            return currency;
+        };
+        const displayCurrency = currentCurrency();
+        let PriceText = '';
+        if (Array.isArray(prices)) {
+            PriceText =
+                prices[displayCurrency].currency.symbol +
+                prices[displayCurrency].amount;
+        } else {
+            console.log('loading...');
+        }
 
-          </Center>
-          {/* Right Side */}
-          <Right>
-            <Title>{data.brand}</Title>
-            <ProductName>{data.name}</ProductName>
-            <PDPOptions data={data.attributes} iddet={data.id} />
-            <PrizeHeading>PRICE:</PrizeHeading>
-            <Price>
-              {PriceText}
-            </Price>
-            <AddToButton onClick={()=> SendCart(data.id)}>ADD TO CART</AddToButton>
-            <Desc>{description.replace("<p>", "").replace("</p>", "").replace("<h1>", "").replace("</h1>", "")}</Desc>
+        const SendCart = (data) => {
+            this.props.addToCart(data);
+            this.props.navigate('/cart');
+        };
 
-          </Right>
-        </Wrapper>
-      </Container>
-    )
-  }else{
-    return(
-      <Container>
-      <Wrapper>
-        {/* Left Side */}
-        <Left>
-          {images.map((data, i)=> {
-            return(
-              <LeftImg key={i} onClick={()=>this.setState({
-                position: i
-              })}>
-                <MiniImageCard key={i} data={data} />
-              </LeftImg>
-            )
-          }
-          )}
-        </Left>
-        {/* Center */}
-        <Center>
-          <BigImage data={data} ima={images[this.state.position]}/>
-
-        </Center>
-        {/* Right Side */}
-        <Right>
-          <Title>{data.brand}</Title>
-          <ProductName>{data.name}</ProductName>
-          <PrizeHeading>PRICE:</PrizeHeading>
-          <Price>
-
-            {PriceText}
-          </Price>
-          <BackButton onClick={()=> this.props.navigate('/')} >BACK TO SHOP ↰</BackButton>
-          <Desc><p>Product is Currently Unavailable</p></Desc>
-
-        </Right>
-      </Wrapper>
-    </Container>
-    )
-  }
-}
+        if (data.inStock === true) {
+            return (
+                <Container>
+                    <Wrapper>
+                        {/* Left Side */}
+                        <Left>
+                            {images.map((data, i) => {
+                                return (
+                                    <LeftImg
+                                        key={i}
+                                        onClick={() =>
+                                            this.setState({
+                                                position: i
+                                            })
+                                        }
+                                    >
+                                        <MiniImageCard key={i} data={data} />
+                                    </LeftImg>
+                                );
+                            })}
+                        </Left>
+                        {/* Center */}
+                        <Center>
+                            <BigImage
+                                data={data}
+                                ima={images[this.state.position]}
+                            />
+                        </Center>
+                        {/* Right Side */}
+                        <Right>
+                            <Title>{data.brand}</Title>
+                            <ProductName>{data.name}</ProductName>
+                            <PDPOptions
+                                data={data.attributes}
+                                iddet={data.id}
+                            />
+                            <PrizeHeading>PRICE:</PrizeHeading>
+                            <Price>{PriceText}</Price>
+                            <AddToButton onClick={() => SendCart(data.id)}>
+                                ADD TO CART
+                            </AddToButton>
+                            <Desc>
+                                {description
+                                    .replace('<p>', '')
+                                    .replace('</p>', '')
+                                    .replace('<h1>', '')
+                                    .replace('</h1>', '')}
+                            </Desc>
+                        </Right>
+                    </Wrapper>
+                </Container>
+            );
+        } else {
+            return (
+                <Container>
+                    <Wrapper>
+                        {/* Left Side */}
+                        <Left>
+                            {images.map((data, i) => {
+                                return (
+                                    <LeftImg
+                                        key={i}
+                                        onClick={() =>
+                                            this.setState({
+                                                position: i
+                                            })
+                                        }
+                                    >
+                                        <MiniImageCard key={i} data={data} />
+                                    </LeftImg>
+                                );
+                            })}
+                        </Left>
+                        {/* Center */}
+                        <Center>
+                            <BigImage
+                                data={data}
+                                ima={images[this.state.position]}
+                            />
+                        </Center>
+                        {/* Right Side */}
+                        <Right>
+                            <Title>{data.brand}</Title>
+                            <ProductName>{data.name}</ProductName>
+                            <PrizeHeading>PRICE:</PrizeHeading>
+                            <Price>{PriceText}</Price>
+                            <BackButton
+                                onClick={() => this.props.navigate('/')}
+                            >
+                                BACK TO SHOP ↰
+                            </BackButton>
+                            <Desc>
+                                <p>Product is Currently Unavailable</p>
+                            </Desc>
+                        </Right>
+                    </Wrapper>
+                </Container>
+            );
+        }
+    }
 }
 
 // Export Component
 const mapStateProps = (state) => {
-  return{
-      currency : state.currency,
-      products: state.shop.product
-  }
-}
-const mapDispatchToProps = dispatch => {
-  return{
-    addToCart : (id) => dispatch(addToCart(id))
-  }
-}
+    return {
+        currency: state.currency,
+        products: state.shop.product
+    };
+};
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addToCart: (id) => dispatch(addToCart(id))
+    };
+};
 
-export default connect(mapStateProps, mapDispatchToProps)(withParams(ProductPage))
+export default connect(
+    mapStateProps,
+    mapDispatchToProps
+)(withParams(ProductPage));

@@ -2,32 +2,33 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import TextAttrBox from './AttrBox';
 
-
 const Container = styled.div`
     margin-top: 43px;
     display: flex;
     flex-direction: column;
-`
-
-
+`;
 
 class PDPOptions extends Component {
-
-
     render() {
-
-        const data = this.props.data
-        const id = this.props.iddet
-        let verifiedArray = []
-        if(Array.isArray(data)){
-            verifiedArray = data
-        }else{
-            console.log("loading..")
+        const data = this.props.data;
+        const id = this.props.iddet;
+        let verifiedArray = [];
+        if (Array.isArray(data)) {
+            verifiedArray = data;
+        } else {
+            console.log('loading..');
         }
         return (
             <Container>
-                {verifiedArray.map((data, i)=> <TextAttrBox key={i}  data={data.items} type={data.type} name={data.name} id={id}/>
-                )}
+                {verifiedArray.map((data, i) => (
+                    <TextAttrBox
+                        key={i}
+                        data={data.items}
+                        type={data.type}
+                        name={data.name}
+                        id={id}
+                    />
+                ))}
             </Container>
         );
     }

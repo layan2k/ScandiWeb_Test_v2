@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-class CartPrices extends Component {
+class MiniCartPrices extends Component {
     render() {
         const data = this.props.data;
         // Currency Handler
@@ -43,4 +43,4 @@ const mapStateProps = (state) => {
     };
 };
 
-export default connect(mapStateProps)(CartPrices);
+export default connect(mapStateProps)(MiniCartPrices);

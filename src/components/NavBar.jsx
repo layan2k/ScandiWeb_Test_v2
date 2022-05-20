@@ -4,14 +4,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components'
-
+import styled from 'styled-components';
+import { changeCart } from '../redux/action/actions';
+import MiniCart from './MiniCart/MiniCart';
 
 // Styling
 const Container = styled.div`
     height: 80px;
     max-height: 80px;
-`
+`;
 
 const Wrapper = styled.div`
     padding: 0 100px;
@@ -19,14 +20,16 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-`
+    @media (max-width: 1400px) {
+        padding: 0 95px;
+    }
+`;
 // Left Side Container
 const Left = styled.div`
     flex: 1;
     display: flex;
     align-items: center;
-`
+`;
 // Center Side Container
 const Center = styled.div`
     flex: 1;
@@ -34,17 +37,14 @@ const Center = styled.div`
     justify-content: center;
     align-items: center;
     cursor: pointer;
-
-`
+`;
 // Right Side Container
 const Right = styled.div`
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-
-
-`
+`;
 // Left Side Menu Designt
 
 const MenuItemContainer = styled.div`
@@ -55,18 +55,16 @@ const MenuItemContainer = styled.div`
     justify-content: center;
     flex-direction: column;
     height: 80px;
-    border-bottom: ${(props) => ((props.allcat) ? '2px solid #5ECE7B' : '')} ;
-`
+    border-bottom: ${(props) => (props.allcat ? '2px solid #5ECE7B' : '')};
+`;
 
 const MenuItem = styled.div`
     font-family: 'Raleway';
     font-size: 16px;
     font-weight: 400;
-    font-size: ${(props) => ((props.allcat) ? '16px' : '')} ;
-    color: ${(props) => ((props.allcat) ? '#5ECE7B' : '')} ;
-
-`
-
+    font-size: ${(props) => (props.allcat ? '16px' : '')};
+    color: ${(props) => (props.allcat ? '#5ECE7B' : '')};
+`;
 
 // Center logo (icons)
 const MainImage = styled.img`
@@ -74,11 +72,11 @@ const MainImage = styled.img`
     top: 0;
     left: 0;
     z-index: 1;
-`
+`;
 const BackGroundicon = styled.img`
     position: absolute;
     top: 23px;
-`
+`;
 // Right Side design
 // Currency Change Toggle
 const DropDownConatiner = styled.div`
@@ -86,38 +84,37 @@ const DropDownConatiner = styled.div`
     cursor: pointer;
     position: relative;
     z-index: 1;
-`
+`;
 
 const DownIcon = styled.img`
     transform: rotate(180deg);
     overflow: hidden;
     transition: all 0.3s ease-in-out;
-    transform: rotate(${(props) => ((props.rotatearrow) ? 0 : '')});
-`
+    transform: rotate(${(props) => (props.rotatearrow ? 0 : '')});
+`;
 const DropDownHeader = styled.div`
     margin-right: 10px;
-`
+`;
 const DropDownListContainer = styled.div`
     display: flex;
     position: absolute;
     background-color: white;
     transition: all 0.3s ease-in-out;
-`
+`;
 
 const DropDownList = styled.ul`
     width: 114px;
     padding: 0;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     box-sizing: border-box;
-    color:#1D1F22;
+    color: #1d1f22;
     font-size: 18px;
     font-weight: 500;
     text-align: center;
     &:first-child {
         padding-top: 0.8em;
     }
-
-`
+`;
 const ListItem = styled.li`
     display: flex;
     justify-content: center;
@@ -125,241 +122,343 @@ const ListItem = styled.li`
     list-style: none;
     width: 114px;
     height: 45px;
-    &:hover{
-        background-color: #EEEEEE;
+    &:hover {
+        background-color: #eeeeee;
     }
     margin-bottom: 0.8em;
-`
+`;
 
 // Cart
 const CartIconContainer = styled.div`
-    margin-left: 22px ;
+    position: relative;
+    margin-left: 22px;
     display: flex;
     justify-items: center;
     align-items: center;
     flex-direction: column;
     cursor: pointer;
     position: relative;
-
-`
-const CartIcon = styled.img``
+`;
+const InCart = styled.div`
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1d1f22;
+    color: white;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    left: 25px;
+    bottom: -2px;
+    transform: translate(-50%, -50%);
+`;
+const CartIcon = styled.img`
+    z-index: 1;
+`;
 
 const CirclesConatiner = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-left: 4px ;
-
-
-`
-const CircleIcon = styled.img``
+    margin-left: 4px;
+`;
+const CircleIcon = styled.img``;
 
 const CartCard = styled.div`
-height: 677px;
-width: 325px;
-border-radius: 0px;
-padding: 32px, 16px, 32px, 16px;
-position: absolute;
-border: 1px solid black;
-margin-right: 300px;
-margin-top: 50px;
-opacity: 1;
-`
-
+    height: auto;
+    width: 325px;
+    border-radius: 0px;
+    padding: 0 5px;
+    position: absolute;
+    margin-top: 50px;
+    margin-right: 200px;
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    z-index: 1;
+    gap: 32px;
+`;
 
 // Class Component For our Navbar
 class Navbar extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-                      isOpen: false,
-                      arrow: false,
-                      cart: false,
-                    }
-        this.wrapperRef = React.createRef()
-        this.cartRef = React.createRef()
-        this.handleClickOutside = this.handleClickOutside.bind(this)
+            isOpen: false,
+            arrow: false,
+            cart: false,
+            quantity: 0
+        };
+        this.wrapperRef = React.createRef();
+        this.cartRef = React.createRef();
+        this.handleClickOutside = this.handleClickOutside.bind(this);
     }
     // Change currency Handler
     changeCurrency = (data) => {
-        this.props.changeCurrentCurrency(data)
-    }
+        this.props.changeCurrentCurrency(data);
+    };
     // Change Category Handler
     changeCategory = (data) => {
-        this.props.changeCurrentCategory(data)
+        this.props.changeCurrentCategory(data);
+    };
+
+    componentDidMount() {
+        const cart = this.props.cart;
+        let count = 0;
+        cart.forEach((item) => {
+            count += item.qty;
+        });
+        document.addEventListener('mousedown', this.handleClickOutside);
+
+        this.setState({
+            quantity: count
+        });
     }
 
-    componentDidMount () {
-        document.addEventListener("mousedown", this.handleClickOutside)
+    componentDidUpdate(prevProps) {
+        if (this.props.cart !== prevProps.cart) {
+            const cart = this.props.cart;
+            let count = 0;
+            cart.forEach((item) => {
+                count += item.qty;
+            });
+            document.addEventListener('mousedown', this.handleClickOutside);
+
+            this.setState({
+                quantity: count
+            });
+        }
     }
 
-    componentWillUnmount () {
-        document.removeEventListener("mousedown", this.handleClickOutside)
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
     }
 
     handleClickOutside(event) {
-        if(this.wrapperRef && !this.wrapperRef.current.contains(event.target)){
+        if (
+            this.wrapperRef &&
+            !this.wrapperRef.current.contains(event.target)
+        ) {
             this.setState({
                 isOpen: false,
-                arrow: false,
-            })
+                arrow: false
+            });
         }
-        if( this.cartRef && ! this.cartRef.current.contains(event.target)){
+        if (this.cartRef && !this.cartRef.current.contains(event.target)) {
             this.setState({
                 cart: false
-            })
+            });
+            this.props.changeCartCondtion(false);
         }
     }
 
-
-
-
     render() {
+        // Toggle DropDown
+        const toggling = () => {
+            const BoolValue = this.state.isOpen;
+            if (BoolValue) {
+                this.setState({ isOpen: false, arrow: false });
+            } else {
+                this.setState({ isOpen: true, arrow: true, cart: false });
+            }
+        };
 
-                // Toggle DropDown
-                const toggling = () =>
-                {
-                    const BoolValue = this.state.isOpen
-                    if(BoolValue){
-                        this.setState({isOpen: false, arrow: false})
-                    }
-                    else{
-                        this.setState({isOpen: true, arrow: true, cart: false})
+        // Toggle cart
+        const carttoggle = () => {
+            const BoolValue = this.state.cart;
+            if (BoolValue) {
+                this.setState({ cart: false });
+                this.props.changeCartCondtion(false);
+            } else {
+                this.setState({ cart: true, isOpen: false, arrow: false });
+                this.props.changeCartCondtion(true);
+            }
+        };
 
-                    }
+        // Function to show active tab
+        let { allcat, clothescat, techcat } = false;
 
-                }
+        const activetab = () => {
+            const currentcategory = this.props.category;
+            if (currentcategory === 'all') {
+                allcat = true;
+            } else if (currentcategory === 'clothes') {
+                clothescat = true;
+            } else {
+                techcat = true;
+            }
+        };
+        activetab();
 
-                // Toggle cart
-                const carttoggle = () => {
-                    const BoolValue = this.state.cart
-                    if(BoolValue){
-                        this.setState({cart: false, })
-                    }
-                    else{
-                        this.setState({cart: true, isOpen: false, arrow: false})
+        // Function that get the current set Currency from the reducer
+        // And Sets the current symbol on Display
+        const displayCurrency = () => {
+            const currentCurrency = this.props.currency;
+            let symbol = ' ';
+            // Switch Satement to decide which text to display
+            switch (currentCurrency.currency) {
+                case 'USD':
+                    symbol = '$';
+                    break;
+                case 'GBP':
+                    symbol = '£';
+                    break;
+                case 'AUD':
+                    symbol = 'A$';
+                    break;
+                case 'JPY':
+                    symbol = '¥';
+                    break;
+                case 'RUB':
+                    symbol = '₽';
+                    break;
+                default:
+                    symbol = '$';
+            }
+            return symbol;
+        };
 
-                    }
-                }
-
-                // Function to show active tab
-                let {allcat, clothescat, techcat } = false;
-
-                const activetab = () => {
-                    const currentcategory = this.props.category
-                    if (currentcategory === "all"){
-                        allcat = true;
-                    }
-                    else if (currentcategory === "clothes"){
-                        clothescat = true;
-                    }
-                    else {
-                        techcat = true;
-                    }
-                }
-                activetab()
-
-
-                // Function that get the current set Currency from the reducer
-                // And Sets the current symbol on Display
-                const displayCurrency = () =>{
-                    const currentCurrency = this.props.currency
-                    let symbol = " "
-                    // Switch Satement to decide which text to display
-                    switch (currentCurrency.currency) {
-                        case "USD":
-                            symbol = "$"
-                            break;
-                        case "GBP":
-                            symbol = "£"
-                        break
-                        case "AUD":
-                            symbol= "A$"
-                        break
-                        case "JPY":
-                            symbol = "¥"
-                        break
-                        case "RUB":
-                            symbol = "₽"
-                        break
-                        default:
-                            symbol = "$";
-                    }
-                    return symbol
-                }
-
-            const displayTextCurrency = displayCurrency()
-
+        const displayTextCurrency = displayCurrency();
 
         return (
             <Container>
                 <Wrapper>
-                    <Left >
-                    <MenuItemContainer allcat={allcat} onClick={()=>this.changeCategory("all")} >
-                        <MenuItem allcat={allcat} > ALL </MenuItem>
-                    </MenuItemContainer>
-                    <MenuItemContainer allcat={clothescat} onClick={()=>this.changeCategory("clothes")}  >
-                        <MenuItem allcat={clothescat}  > CLOTHES </MenuItem>
-                    </MenuItemContainer>
-                    <MenuItemContainer allcat={techcat} onClick={()=>this.changeCategory("tech")}  >
-                        <MenuItem allcat={techcat}> TECH </MenuItem>
-                    </MenuItemContainer>
+                    <Left>
+                        <MenuItemContainer
+                            allcat={allcat}
+                            onClick={() => this.changeCategory('all')}
+                        >
+                            <MenuItem allcat={allcat}> ALL </MenuItem>
+                        </MenuItemContainer>
+                        <MenuItemContainer
+                            allcat={clothescat}
+                            onClick={() => this.changeCategory('clothes')}
+                        >
+                            <MenuItem allcat={clothescat}> CLOTHES </MenuItem>
+                        </MenuItemContainer>
+                        <MenuItemContainer
+                            allcat={techcat}
+                            onClick={() => this.changeCategory('tech')}
+                        >
+                            <MenuItem allcat={techcat}> TECH </MenuItem>
+                        </MenuItemContainer>
                     </Left>
                     <Link to={'/'}>
-                    <Center>
-                        <MainImage src='/assets/svg_3.svg' />
-                        <BackGroundicon src='/assets/svg_2.svg' />
-                    </Center>
+                        <Center>
+                            <MainImage src="/assets/svg_3.svg" />
+                            <BackGroundicon src="/assets/svg_2.svg" />
+                        </Center>
                     </Link>
                     <Right>
-                        <DropDownConatiner onClick={toggling} ref={this.wrapperRef}>
-                            <DropDownHeader>{displayTextCurrency} <DownIcon src='/assets/Vector.svg' rotatearrow = {this.state.arrow}/></DropDownHeader>
-                            {(this.state.isOpen)&&
-                            <DropDownListContainer>
-                                <DropDownList >
-                                    <ListItem value="USD" onClick={()=>this.changeCurrency('USD')} >$ USD</ListItem>
-                                    <ListItem value="GBP" onClick={()=>this.changeCurrency('GBP')}  >£ GBP</ListItem>
-                                    <ListItem value="AUD" onClick={()=>this.changeCurrency('AUD')}  >A$ AUD</ListItem>
-                                    <ListItem value="JPY" onClick={()=>this.changeCurrency('JPY')}  >¥ JPY</ListItem>
-                                    <ListItem value="RUB" onClick={()=>this.changeCurrency('RUB')}  >₽ RUB</ListItem>
-                                </DropDownList>
-                            </DropDownListContainer>
-                            }
+                        <DropDownConatiner
+                            onClick={toggling}
+                            ref={this.wrapperRef}
+                        >
+                            <DropDownHeader>
+                                {displayTextCurrency}{' '}
+                                <DownIcon
+                                    src="/assets/Vector.svg"
+                                    rotatearrow={this.state.arrow}
+                                />
+                            </DropDownHeader>
+                            {this.state.isOpen && (
+                                <DropDownListContainer>
+                                    <DropDownList>
+                                        <ListItem
+                                            value="USD"
+                                            onClick={() =>
+                                                this.changeCurrency('USD')
+                                            }
+                                        >
+                                            $ USD
+                                        </ListItem>
+                                        <ListItem
+                                            value="GBP"
+                                            onClick={() =>
+                                                this.changeCurrency('GBP')
+                                            }
+                                        >
+                                            £ GBP
+                                        </ListItem>
+                                        <ListItem
+                                            value="AUD"
+                                            onClick={() =>
+                                                this.changeCurrency('AUD')
+                                            }
+                                        >
+                                            A$ AUD
+                                        </ListItem>
+                                        <ListItem
+                                            value="JPY"
+                                            onClick={() =>
+                                                this.changeCurrency('JPY')
+                                            }
+                                        >
+                                            ¥ JPY
+                                        </ListItem>
+                                        <ListItem
+                                            value="RUB"
+                                            onClick={() =>
+                                                this.changeCurrency('RUB')
+                                            }
+                                        >
+                                            ₽ RUB
+                                        </ListItem>
+                                    </DropDownList>
+                                </DropDownListContainer>
+                            )}
                         </DropDownConatiner>
-                        <CartIconContainer onClick={carttoggle} ref={this.cartRef} >
-                            <CartIcon src='/assets/Vector2.svg' />
-                            <CirclesConatiner>
-                                <CircleIcon src='/assets/Vector3.svg'/>
-                                <CircleIcon src='/assets/Vector3.svg'/>
+                        <CartIconContainer ref={this.cartRef}>
+                            <InCart onClick={carttoggle}>
+                                {this.state.quantity}
+                            </InCart>
+                            <CartIcon
+                                onClick={carttoggle}
+                                src="/assets/Vector2.svg"
+                            />
+                            <CirclesConatiner onClick={carttoggle}>
+                                <CircleIcon src="/assets/Vector3.svg" />
+                                <CircleIcon src="/assets/Vector3.svg" />
                             </CirclesConatiner>
-                            {(this.state.cart)&&
-                             <CartCard/>}
-
+                            {this.state.cart && (
+                                <CartCard>
+                                    <MiniCart />
+                                </CartCard>
+                            )}
                         </CartIconContainer>
                     </Right>
                 </Wrapper>
-
             </Container>
         );
     }
 }
 
-
 const mapStateProps = (state) => {
-    return{
-        currency : state.currency
-    }
-}
+    return {
+        currency: state.currency,
+        cart: state.shop.cart
+    };
+};
 
 const mapDispatchToProps = (dispatch) => {
-    return{
-            changeCurrentCurrency : (data) => {
-                dispatch({type: "CHANGE_CURRENCY", data: data})
-            },
-            changeCurrentCategory : (data)=>{
-                dispatch({type: "CHANGE_CATEGORY", data: data})
-            }
+    return {
+        changeCurrentCurrency: (data) => {
+            dispatch({ type: 'CHANGE_CURRENCY', data: data });
+        },
+        changeCurrentCategory: (data) => {
+            dispatch({ type: 'CHANGE_CATEGORY', data: data });
+        },
+        changeCartCondtion: (data) => {
+            dispatch(changeCart(data));
         }
-    }
+    };
+};
 
-export default connect(mapStateProps, mapDispatchToProps)(Navbar)
+export default connect(mapStateProps, mapDispatchToProps)(Navbar);
