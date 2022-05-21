@@ -1,15 +1,19 @@
+// MiniCardAttributes , This Component manages how attributes are displayed in the
+// mainly when it comes to choosing the right Attribute to display.
+// imports
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-
+// Main Container
 const Container = styled.div`
     display: flex;
 `;
+// Container that holds Mapped Items
 const ItemContainer = styled.div`
     display: flex;
     flex-direction: column;
 `;
-
+// Type Of Attribute Header
 const MainHeading = styled.div`
     margin-top: 8px;
     font-family: 'Raleway';
@@ -18,10 +22,12 @@ const MainHeading = styled.div`
     margin-bottom: 7px;
     text-transform: uppercase;
 `;
+// That holds Attribute Boxes
 const BoxContainer = styled.div`
     display: flex;
     box-sizing: border-box;
 `;
+// Box That holds attributes Attribute Txt
 const Box = styled.div`
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 14px;
@@ -41,6 +47,7 @@ const Box = styled.div`
     text-decoration: none;
     cursor: pointer;
 `;
+// Container that holds the Color Attribute Boxes
 const ColorConatiner = styled.div`
     height: 20px;
     width: 20px;
@@ -52,6 +59,7 @@ const ColorConatiner = styled.div`
         props.current === true ? '1px solid #5ECE7B' : 'none'};
     transition: all 0.1s ease-in;
 `;
+// Color Box
 const COlorBox = styled.div`
     height: 16px;
     width: 16px;
@@ -59,6 +67,7 @@ const COlorBox = styled.div`
     background-color: ${(props) => props.background};
 `;
 
+// Component Entry
 class MiniCartAttributes extends Component {
     constructor(props) {
         super(props);
@@ -67,6 +76,7 @@ class MiniCartAttributes extends Component {
             selectedColor: 0
         };
     }
+    // Method loads attributes that have been chosen by the user
     setAttributes = () => {
         const name = this.props.name;
         const attributes = this.props.attributes;
@@ -80,33 +90,28 @@ class MiniCartAttributes extends Component {
                 : item
         );
     };
-
+    // Loads the cart states to the users chosen attributes on render
     componentDidMount() {
         this.setAttributes();
     }
-    componentDidUpdate(prevProps) {
-        if (
-            this.props.attributes !== prevProps.attributes ||
-            this.props.attributes !== prevProps.attributes
-        ) {
-            this.fetchProducts();
-        }
-    }
 
     render() {
+        // Variables
         const data = this.props.data;
         const type = this.props.type;
         const name = this.props.name;
+        // Define the data if not undefined, to avoid page crashes due to undefined response
         let refinedata = [];
         if (Array.isArray(data)) {
             refinedata = data;
         } else {
             console.log('loading data...');
         }
-
+        // Loading Users Attributes
         const activeColor = this.state.selectedColor;
         const activeText = this.state.selectedText;
         return (
+            // Logic so that the appropriate attributes are rendered on screen using attribute type
             <Container>
                 {type === 'text' && (
                     <ItemContainer>
@@ -147,10 +152,11 @@ class MiniCartAttributes extends Component {
     }
 }
 
+// Loading the users defined attributes from the Redux Store
 const mapStateProps = (state) => {
     return {
         attributes: state.shop.attributes
     };
 };
-
+// Export the Component and Connecting to the Redux store.
 export default connect(mapStateProps)(MiniCartAttributes);

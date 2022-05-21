@@ -9,6 +9,8 @@ import AllCategory from './AllCategory';
 import Cart from './Cart';
 import ProductPage from './ProductPage';
 
+// Container for all the Routed Pages , background updates
+// when the Mini Cart Component is opened =
 const Container = styled.div`
     background: ${(props) =>
         props.cart === true ? 'rgba(57, 55, 72, 0.22)' : 'none'};
@@ -22,13 +24,13 @@ class Home extends Component {
             cartOpenCondition: false
         };
     }
-
+    // Checks if the cart is opened when page Renders
     componentDidMount() {
         this.setState({
             cartOpenCondition: this.props.cartCondition.isCartOpened
         });
     }
-
+    //Updates the state when thw cart is enable therefore allowing a background to dynamically render
     componentDidUpdate(prevProps) {
         if (this.props.cartCondition !== prevProps.cartCondition) {
             this.setState({
@@ -38,6 +40,7 @@ class Home extends Component {
     }
 
     render() {
+        // variable that handle data
         const category = this.props.category;
         const cartCondition = this.state.cartOpenCondition;
         return (
@@ -60,6 +63,7 @@ class Home extends Component {
     }
 }
 
+// Connection to the redux  store
 const mapStateProps = (state) => {
     return {
         category: state.category,

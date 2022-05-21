@@ -9,12 +9,15 @@ const Container = styled.div`
     height: 560px;
     position: relative;
 `;
+// Image
 const Image = styled.img`
     width: 662px;
     height: 540px;
     object-fit: contain;
     transition: all 0.3s ease-in;
 `;
+// Out Of Stock Image
+// Opacity at 50%
 const ImageDisabled = styled.img`
     width: 662px;
     height: 540px;
@@ -22,6 +25,7 @@ const ImageDisabled = styled.img`
     transition: all 0.3s ease-in;
     opacity: 0.5;
 `;
+// Image Text out of stock on top of Main Image
 const TextImage = styled.div`
     font-family: 'raleway';
     font-size: 48px;
@@ -32,8 +36,10 @@ const TextImage = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
 `;
-// Main Entry for our component
+// Component Entry
 export default class BigImage extends Component {
+    // Decides the appropriate Component to export
+    // Depending on the product Stoxk
     render() {
         const data = this.props.data;
         if (data.inStock === true) {

@@ -1,3 +1,5 @@
+// Redux Actions
+// ActionTypes Imports
 import * as actionTypes from '../actionTypes/actionTypes';
 
 export const changeCurrency = (data) => {
@@ -70,12 +72,5 @@ export const addTextAttri = (itemID, value) => {
             id: itemID,
             textattri: value
         }
-    };
-};
-
-export const loadCurrentItem = (item) => {
-    return {
-        type: actionTypes.LOAD_CURRENT_ITEM,
-        payload: item
     };
 };

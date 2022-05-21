@@ -1,3 +1,4 @@
+// Gets Product By Id and expects and id to be passed in
 import { Query, client, Field } from '@tilework/opus';
 
 export const getProductsById = async (id) => {

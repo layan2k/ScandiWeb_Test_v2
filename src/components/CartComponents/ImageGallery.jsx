@@ -1,6 +1,9 @@
+// Image Gallery Component
+// imports
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+// Main container for our Image
 const Conatainer = styled.div`
     height: 228px;
     width: 200px;
@@ -8,12 +11,13 @@ const Conatainer = styled.div`
     position: relative;
     z-index: 0;
 `;
+// Image
 const MainImage = styled.img`
     height: 228px;
     width: 200px;
     object-fit: fill;
 `;
-
+// Containers for the Image next and previous controls
 const ChangeImageControls = styled.div`
     position: absolute;
     display: flex;
@@ -21,6 +25,7 @@ const ChangeImageControls = styled.div`
     bottom: 16px;
     transform: translate(-50%, -50%);
 `;
+// Previous Image Control or Jump to the last Image
 const ChangeImageLeft = styled.div`
     width: 24px;
     height: 24px;
@@ -31,6 +36,7 @@ const ChangeImageLeft = styled.div`
     margin-right: 8px;
     background: rgba(0, 0, 0, 0.73); ;
 `;
+// Next Image Control or Jump to the first
 const ChangeImageRight = styled.div`
     width: 24px;
     height: 24px;
@@ -40,9 +46,10 @@ const ChangeImageRight = styled.div`
     cursor: pointer;
     background: rgba(0, 0, 0, 0.73);
 `;
-
+// Image Icons
 const ControlIcons = styled.img``;
 
+// imageGallery Component Main Entry Image Position set to 0
 class ImageGallery extends Component {
     constructor(props) {
         super(props);
@@ -54,7 +61,8 @@ class ImageGallery extends Component {
         const images = this.props.picsdata;
         const imagepositions = this.state.imageposition;
         const NumberOfImages = images.length;
-
+        // Previous Fuction changes to the last if its the first image
+        // and changes to previous image if its not the first image
         const ChangeLeft = () => {
             const changeValue = imagepositions - 1;
             const NoIma = NumberOfImages - 1;
@@ -68,6 +76,8 @@ class ImageGallery extends Component {
                 });
             }
         };
+        // Next Fuction changes to the first if its the last image
+        // and changes to next image if its not the last image
         const ChangeRight = () => {
             const changeValue = imagepositions + 1;
             if (NumberOfImages - 1 > imagepositions) {
@@ -81,6 +91,7 @@ class ImageGallery extends Component {
             }
         };
         return (
+            // Controls are available the number of images is greater that 1
             <Conatainer>
                 <MainImage src={images[imagepositions]} />
                 {NumberOfImages > 1 && (

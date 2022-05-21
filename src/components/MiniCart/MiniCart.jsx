@@ -26,13 +26,13 @@ const Header = styled.h1`
     display: flex;
     align-items: center;
 `;
-// Items Container holds our Cart Items
+// Items Container holds the  Cart Items
 const ItemsContainer = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 55px;
 `;
-// Our Cart Item
+// Cart Item
 const CartItemContainer = styled.div`
     height: auto;
     width: 100%;
@@ -45,7 +45,7 @@ const LeftItems = styled.div`
     flex-direction: column;
     max-width: 136px;
 `;
-// Our Product Band
+// Product Brand
 const ItemHeader = styled.div`
     margin-top: 16px;
     font-size: 16px;
@@ -63,7 +63,7 @@ const ItemPrice = styled.div`
     font-size: 16px;
     font-weight: 500;
 `;
-// Our Right Container that contains the Picture and Quantity Controls
+// Right Container that contains the Picture and Quantity Controls
 const RightContainer = styled.div`
     display: flex;
     align-items: center;
@@ -76,7 +76,7 @@ const RightItems = styled.div`
     height: 100%;
     align-items: center;
 `;
-// Container with Our Quantity Controls
+// Container with Quantity Controls
 const AdjPrice = styled.div`
     display: flex;
     flex-direction: column;
@@ -109,6 +109,7 @@ const MinusBox = styled.div`
     border: 1px solid #1d1f22;
     cursor: pointer;
 `;
+// Current Product Quantity
 const Quantity = styled.div`
     display: flex;
     align-items: center;
@@ -119,41 +120,47 @@ const Quantity = styled.div`
     height: 45px;
     width: 45px;
 `;
-
+// Gallery Container
 const Gallery = styled.div`
     display: flex;
 `;
-
+// Total Container
 const Total = styled.div`
     margin-top: 24px;
     width: 100%;
     display: flex;
 `;
+// Total Text Containe
 const TotalProperties = styled.div`
     font-size: 24px;
 `;
+// Total Text Headings
 const TotalValueHeading = styled.div`
+    font-family: 'Roboto';
     font-weight: 500;
     margin-top: 8px;
+    font-size: 16px;
 `;
-
+// Product Total Value Container
 const TotalValues = styled.div`
     font-size: 16px;
     font-weight: 700;
     margin-left: 20px;
     color: #1d1f22;
 `;
+// Product Total Value
 const TotalValueItems = styled.div`
-    margin-top: 12px;
+    margin-top: 8px;
     color: #1d1f22; ;
 `;
+// Buttons Container
 const BottomButtons = styled.div`
     padding: 0 18.5px;
     display: flex;
     margin-top: 16px;
     justify-content: space-between;
 `;
-
+// View bag Button
 const ViewBagButton = styled.div`
     display: flex;
     justify-content: center;
@@ -169,7 +176,7 @@ const ViewBagButton = styled.div`
     border: 1px solid #1d1f22;
     cursor: pointer;
 `;
-
+// Checkout Button
 const OrderButton = styled.div`
     display: flex;
     margin-left: 12px;
@@ -189,7 +196,9 @@ const OrderButton = styled.div`
     }
 `;
 
+// MiniCart Component entry
 class MiniCart extends Component {
+    // Initialize States
     constructor(props) {
         super(props);
         this.state = {
@@ -199,9 +208,11 @@ class MiniCart extends Component {
         };
     }
 
+    // Loads data and sets state when first rendered
     componentDidMount() {
+        // get cart information from the redux store
         const cart = this.props.cart;
-        // Currency Handler
+        //  Currency Handler To Determine which currency is in use
         const currentCurrency = () => {
             const currentCurrency = this.props.currency;
             let currency = 0;
@@ -226,30 +237,36 @@ class MiniCart extends Component {
             }
             return currency;
         };
+        // Currency Handler is used to determine which position our Values are in the Array
         const displayCurrency = currentCurrency();
         let count = 0;
         let total = 0;
+        // For each to get out products qty and  Product Total
         cart.forEach((item) => {
             count += item.qty;
             total += item.prices[displayCurrency].amount * item.qty;
         });
-
+        // tax and total calculation tax included
         const tax = 0.21 * total;
         const finalTotal = tax + total;
-
+        // sets states
         this.setState({
             cartCount: count,
             total: parseFloat(finalTotal).toFixed(2),
             tax: parseFloat(tax).toFixed(2)
         });
     }
+
+    // Loads data when store is updated
+    // and dynamically updates  states
     componentDidUpdate(prevProps) {
         if (
             this.props.cart !== prevProps.cart ||
             this.props.currency !== prevProps.currency
         ) {
+            // get cart information from the redux store
             const cart = this.props.cart;
-            // Currency Handler
+            //  Currency Handler To Decide which currency is in use
             const currentCurrency = () => {
                 const currentCurrency = this.props.currency;
                 let currency = 0;
@@ -274,16 +291,19 @@ class MiniCart extends Component {
                 }
                 return currency;
             };
+            // Currency Handler is used to determine which positions our Values are in the Array
             const displayCurrency = currentCurrency();
             let count = 0;
             let total = 0;
+            // For each to get out products qty and Product Total
             cart.forEach((item) => {
                 count += item.qty;
                 total += item.prices[displayCurrency].amount * item.qty;
             });
+            // tax and total calculation tax included
             const tax = 0.21 * total;
             const finalTotal = tax + total;
-
+            // updates  states
             this.setState({
                 cartCount: count,
                 total: parseFloat(finalTotal).toFixed(2),
@@ -292,13 +312,16 @@ class MiniCart extends Component {
         }
     }
     render() {
+        // loads  cart from the redux store
         let cart = [];
         cart = this.props.cart;
-
+        // QTy is quantity
+        // Add Qty and update qty in  redux store
         const AddQty = (id, qty) => {
             const newQty = qty + 1;
             this.props.changeQuantityDetail(id, newQty);
         };
+        // Deduct Qty and Delete from cart when qty becomes 1
         const RemoveQty = (id, qty) => {
             const newQty = qty - 1;
             if (qty > 1) {
@@ -308,8 +331,9 @@ class MiniCart extends Component {
             }
         };
 
-        // Currency Handler
+        // Currency Handler To determine the current symbol been utilizes
         const currentCurrency = () => {
+            // get currency values from the redux store
             const currentCurrency = this.props.currency;
             let currency = '$';
             switch (currentCurrency.currency) {
@@ -333,11 +357,14 @@ class MiniCart extends Component {
             }
             return currency;
         };
+        // Returns the current  currency symbol as string
         const displayCurrency = currentCurrency();
 
         return (
             <Container>
+                {/* Total Qty */}
                 <Header>My Bag, {this.state.cartCount} items</Header>
+                {/* Cart Items */}
                 {cart.map((data, i) => (
                     <ItemsContainer key={i}>
                         <CartItemContainer>
@@ -354,6 +381,7 @@ class MiniCart extends Component {
                             </LeftItems>
                             <RightContainer>
                                 <RightItems>
+                                    {/* Controls */}
                                     <AdjPrice>
                                         <PlusBox
                                             onClick={() =>
@@ -375,6 +403,7 @@ class MiniCart extends Component {
                                             </span>
                                         </MinusBox>
                                     </AdjPrice>
+                                    {/* Gallery */}
                                     <Gallery>
                                         <MiniCartImageGallery
                                             picsdata={data.gallery}
@@ -385,6 +414,7 @@ class MiniCart extends Component {
                         </CartItemContainer>
                     </ItemsContainer>
                 ))}
+                {/* Total Summary */}
                 <Total>
                     <TotalProperties>
                         <TotalValueHeading>Total:</TotalValueHeading>
@@ -395,6 +425,7 @@ class MiniCart extends Component {
                         </TotalValueItems>
                     </TotalValues>
                 </Total>
+                {/* View and Checkout Buttons */}
                 <BottomButtons>
                     <Link to="/cart" style={{ textDecoration: 'none' }}>
                         <ViewBagButton>VIEW BAG</ViewBagButton>
@@ -414,6 +445,8 @@ const mapStateProps = (state) => {
     };
 };
 
+// Change Qty and remove products from store
+// Function
 const mapDispatchToProps = (dispatch) => {
     return {
         changeQuantityDetail: (id, value) => {

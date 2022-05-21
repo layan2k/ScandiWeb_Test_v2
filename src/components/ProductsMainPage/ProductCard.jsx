@@ -157,7 +157,7 @@ const DisabledPrices = styled.h2`
 // Card Component Entry
 class Card extends Component {
     render() {
-        // Variables to manage our data
+        // Variables to manage data
         const data = this.props.data;
         const images = data.gallery;
         const prices = data.prices;
@@ -244,7 +244,7 @@ class Card extends Component {
     }
 }
 
-// Utilization Of our Redux Store
+// Utilization Of the Redux Store
 
 // Getting the currency state from Redux
 const mapStateProps = (state) => {
@@ -253,12 +253,12 @@ const mapStateProps = (state) => {
     };
 };
 
-// Adding Item to our cart
+// Adding Item to cart
 const mapDispatchToProps = (dispatch) => {
     return {
         addToCart: (id) => dispatch(addToCart(id))
     };
 };
 
-//   exporting Our Component and connecting it to Our Store
+//   exporting  Component and connecting it to the Redux Store
 export default connect(mapStateProps, mapDispatchToProps)(Card);

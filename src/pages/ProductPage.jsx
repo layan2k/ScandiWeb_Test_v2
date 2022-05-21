@@ -47,6 +47,7 @@ const Right = styled.div`
     display: flex;
     flex-direction: column;
 `;
+// Product Brand
 const Title = styled.div`
     color: #1d1f22;
     font-family: 'Raleway';
@@ -55,6 +56,7 @@ const Title = styled.div`
     display: flex;
     align-items: center;
 `;
+// Product Name
 const ProductName = styled.div`
     font-size: 30px;
     font-weight: 400;
@@ -62,8 +64,8 @@ const ProductName = styled.div`
     display: flex;
     align-items: center;
 `;
-
-const PrizeHeading = styled.div`
+// Price Heading
+const PriceHeading = styled.div`
     margin-top: 36px;
     font-family: 'Roboto Condensed';
     font-weight: 700;
@@ -71,12 +73,14 @@ const PrizeHeading = styled.div`
     display: flex;
     align-items: center;
 `;
+// Product Price
 const Price = styled.div`
     margin-top: 10px;
     font-family: 'Raleway';
     font-weight: 700;
     font-size: 24px;
 `;
+// Add to Cart Button
 const AddToButton = styled.div`
     margin-top: 20px;
     display: flex;
@@ -92,6 +96,7 @@ const AddToButton = styled.div`
     color: white;
     cursor: pointer;
 `;
+// Return Home Button
 const BackButton = styled.div`
     margin-top: 20px;
     display: flex;
@@ -112,6 +117,7 @@ const BackButton = styled.div`
     &:hover {
     }
 `;
+// Product Description
 const Desc = styled.div`
     margin-top: 40px;
     font-family: 'Roboto';
@@ -138,7 +144,7 @@ class ProductPage extends Component {
         };
         this.fetchData = this.fetchData.bind(this);
     }
-
+    // Method for the API call by params.id
     fetchData = async () => {
         const { id } = this.props.params;
         const response = await getProductsById(id).catch((err) =>
@@ -155,6 +161,7 @@ class ProductPage extends Component {
     }
 
     render() {
+        // variables
         let description = '';
         const data = this.state.data;
         const images = this.state.images;
@@ -236,7 +243,7 @@ class ProductPage extends Component {
                                 data={data.attributes}
                                 iddet={data.id}
                             />
-                            <PrizeHeading>PRICE:</PrizeHeading>
+                            <PriceHeading>PRICE:</PriceHeading>
                             <Price>{PriceText}</Price>
                             <AddToButton onClick={() => SendCart(data.id)}>
                                 ADD TO CART
@@ -284,7 +291,7 @@ class ProductPage extends Component {
                         <Right>
                             <Title>{data.brand}</Title>
                             <ProductName>{data.name}</ProductName>
-                            <PrizeHeading>PRICE:</PrizeHeading>
+                            <PriceHeading>PRICE:</PriceHeading>
                             <Price>{PriceText}</Price>
                             <BackButton
                                 onClick={() => this.props.navigate('/')}
@@ -302,13 +309,14 @@ class ProductPage extends Component {
     }
 }
 
-// Export Component
+// Export Component, connction to the redux store and custom functions
 const mapStateProps = (state) => {
     return {
         currency: state.currency,
         products: state.shop.product
     };
 };
+// Cart dispatching function to the redux store
 const mapDispatchToProps = (dispatch) => {
     return {
         addToCart: (id) => dispatch(addToCart(id))

@@ -1,6 +1,9 @@
+// MiniCartImage Gallery Component
+// imports
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+// Main container for Image
 const Conatainer = styled.div`
     height: 190px;
     width: 120px;
@@ -9,12 +12,14 @@ const Conatainer = styled.div`
     z-index: 0;
     max-width: 120px;
 `;
+// Image
 const MainImage = styled.img`
     height: 190px;
     width: 120px;
     object-fit: fill;
 `;
 
+// imageGallery Component Main Entry Image Position set to 0
 class MiniCartImageGallery extends Component {
     constructor(props) {
         super(props);

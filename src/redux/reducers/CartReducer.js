@@ -1,10 +1,15 @@
+// Cart  Reducer
+// Handles our Cart Actions
+// Action Types
 import * as actionTypes from '../actionTypes/actionTypes';
 
+// Updates Local Storage
 const updateCart = (data, attributesdata) => {
     localStorage.setItem('cart', JSON.stringify(data));
     localStorage.setItem('cart-attributes', JSON.stringify(attributesdata));
 };
 
+// Retrieves State from local storage
 const initialProduct = () => {
     const Getproducts = localStorage.getItem('products');
     let products = [];
@@ -13,6 +18,7 @@ const initialProduct = () => {
     }
     return products;
 };
+// Retrieves State from local storage
 const initialCart = () => {
     const GetCart = localStorage.getItem('cart');
     let cart = [];
@@ -21,6 +27,7 @@ const initialCart = () => {
     }
     return cart;
 };
+// Retrieves Data from local storage
 const initialAttributes = () => {
     const GetAttributes = localStorage.getItem('cart-attributes');
     let attributes = [];
@@ -30,15 +37,18 @@ const initialAttributes = () => {
     return attributes;
 };
 
+// initial Redux Store State
 const initialState = {
     products: initialProduct(), //{id, title, description, price, img}
-    cart: initialCart(),
-    attributes: initialAttributes(),
-    currentItem: null
+    cart: initialCart(), // {id, title, description, price, img}
+    attributes: initialAttributes() //{id, attributes}
 };
 
+// Reducer
 export const CartReducer = (state = initialState, action) => {
+    // Updates local storage with the stores state
     updateCart(state.cart, state.attributes);
+    // Switch statements for handling actions when they're called
     switch (action.type) {
         case actionTypes.ADD_PRODUCTS:
             return {
@@ -48,7 +58,7 @@ export const CartReducer = (state = initialState, action) => {
                         ? state.products
                         : action.data
             };
-
+        // Add to cart action
         case actionTypes.ADD_TO_CART:
             const item = state.products.find(
                 (prod) => prod.id === action.payload.id
@@ -66,13 +76,13 @@ export const CartReducer = (state = initialState, action) => {
                       )
                     : [...state.cart, { ...item, qty: 1 }]
             };
-
+        // Remove To cart Actiom
         case actionTypes.REMOVE_FROM_CART:
             return {
                 ...state,
                 cart: state.cart.filter((item) => item.id !== action.payload.id)
             };
-
+        // Adjust QTY action
         case actionTypes.ADJUST_QTY:
             return {
                 ...state,
@@ -82,13 +92,7 @@ export const CartReducer = (state = initialState, action) => {
                         : item
                 )
             };
-
-        case actionTypes.LOAD_CURRENT_ITEM:
-            return {
-                ...state,
-                currentItem: action.payload
-            };
-
+        // Add Color attributes action
         case actionTypes.ADD_COLOR_ATTRIBUTE:
             const inColorAttri = state.attributes.find((item) =>
                 item.id === action.payload.id ? true : false
@@ -112,7 +116,7 @@ export const CartReducer = (state = initialState, action) => {
                           }
                       ]
             };
-
+        // Add text attribute actions
         case actionTypes.ADD_TEXT_ATTRIBUTE:
             const inTextAttri = state.attributes.find((item) =>
                 item.id === action.payload.id ? true : false

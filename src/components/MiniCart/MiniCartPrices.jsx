@@ -1,10 +1,15 @@
+// MiniCartPrices Component helps us get the right Currency Value depending
+// On the Store Set Currenct
+// imports
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+// Cart Prices Component Entry
 class MiniCartPrices extends Component {
     render() {
+        // data from the Redux store
         const data = this.props.data;
-        // Currency Handler
+        // Currency Handler To Decide which currency is set
         const currentCurrency = () => {
             const currentCurrency = this.props.currency;
             let currency = 0;
@@ -29,7 +34,9 @@ class MiniCartPrices extends Component {
             }
             return currency;
         };
+        // Currency Handler is used to determine which position our Values are in the Array
         const displayCurrency = currentCurrency();
+        // Calculation For  products value price * quantity and returns data as a float value
         const amount = parseFloat(
             data[displayCurrency].amount * this.props.qty
         ).toFixed(2);
@@ -37,6 +44,7 @@ class MiniCartPrices extends Component {
     }
 }
 
+// Loads the current Store Currency
 const mapStateProps = (state) => {
     return {
         currency: state.currency

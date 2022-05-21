@@ -85,23 +85,26 @@ const DropDownConatiner = styled.div`
     position: relative;
     z-index: 1;
 `;
-
+// DownIcon container ,Rotates up when Currency Dropdown is opens
+// and up when it closes
 const DownIcon = styled.img`
     transform: rotate(180deg);
     overflow: hidden;
     transition: all 0.3s ease-in-out;
     transform: rotate(${(props) => (props.rotatearrow ? 0 : '')});
 `;
+// Current Currency Symbol + Lable
 const DropDownHeader = styled.div`
     margin-right: 10px;
 `;
+// Main Container for drop down
 const DropDownListContainer = styled.div`
     display: flex;
     position: absolute;
     background-color: white;
     transition: all 0.3s ease-in-out;
 `;
-
+// Dropdown ul (Wrapper in Container)
 const DropDownList = styled.ul`
     width: 114px;
     padding: 0;
@@ -115,6 +118,7 @@ const DropDownList = styled.ul`
         padding-top: 0.8em;
     }
 `;
+// Dropdown Currency List Item
 const ListItem = styled.li`
     display: flex;
     justify-content: center;
@@ -139,6 +143,7 @@ const CartIconContainer = styled.div`
     cursor: pointer;
     position: relative;
 `;
+// Cart qty
 const InCart = styled.div`
     position: absolute;
     display: flex;
@@ -157,18 +162,20 @@ const InCart = styled.div`
     bottom: -2px;
     transform: translate(-50%, -50%);
 `;
+// Cart svg
 const CartIcon = styled.img`
     z-index: 1;
 `;
-
+// Cart wheels container
 const CirclesConatiner = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-left: 4px;
 `;
+// Cart wheel svg
 const CircleIcon = styled.img``;
-
+// MinCart card
 const CartCard = styled.div`
     height: auto;
     width: 325px;
@@ -186,7 +193,7 @@ const CartCard = styled.div`
     gap: 32px;
 `;
 
-// Class Component For our Navbar
+// Class Component For  Navbar
 class Navbar extends Component {
     constructor(props) {
         super(props);
@@ -196,6 +203,7 @@ class Navbar extends Component {
             cart: false,
             quantity: 0
         };
+        // Ref for clicks outside Container
         this.wrapperRef = React.createRef();
         this.cartRef = React.createRef();
         this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -209,6 +217,9 @@ class Navbar extends Component {
         this.props.changeCurrentCategory(data);
     };
 
+    // Loads data when the page is firt renderd
+    // ,sets  states
+    // and monitors mouse movement and clicks
     componentDidMount() {
         const cart = this.props.cart;
         let count = 0;
@@ -222,6 +233,9 @@ class Navbar extends Component {
         });
     }
 
+    // Loads data when store is updated
+    // ,dynamically updates  states
+    // and monitors mouse movement and clicks
     componentDidUpdate(prevProps) {
         if (this.props.cart !== prevProps.cart) {
             const cart = this.props.cart;
@@ -240,7 +254,7 @@ class Navbar extends Component {
     componentWillUnmount() {
         document.removeEventListener('mousedown', this.handleClickOutside);
     }
-
+    // Method to close Cart and Currency Switcher if clicked out their container
     handleClickOutside(event) {
         if (
             this.wrapperRef &&

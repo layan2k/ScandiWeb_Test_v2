@@ -67,31 +67,30 @@ class AllCategory extends Component {
         });
     };
 
+    // fetching products for the redux store
     fetchProductsForStore = async () => {
         const response = await GetCategory('all').catch((err) =>
             console.log(err)
         );
         this.props.addProducts(response.category.products);
     };
-
+    // renders data when page loads
     componentDidMount() {
         this.fetchProducts();
         this.fetchProductsForStore();
     }
-
+    // dynamically updates date when props change
     async componentDidUpdate(prevProps) {
         if (this.props.category !== prevProps.category) {
             this.fetchProducts();
         }
     }
 
-    setImage = (position) => {
-        return position;
-    };
-
     render() {
+        // variobles to handle api data
         const headtitle = this.props.category;
         const data = this.state.data;
+        // Loading ... comes up when the api data is not available or is loading
         if (this.state.isLoading === false) {
             return (
                 <Container>
@@ -117,7 +116,8 @@ class AllCategory extends Component {
         }
     }
 }
-
+// connects to the redux store and stores all products from the API
+//  So that they can be utilized in the cars
 const mapDispatchToProps = (dispatch) => {
     return {
         addProducts: (data) => {
