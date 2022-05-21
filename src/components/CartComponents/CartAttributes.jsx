@@ -159,4 +159,3 @@ const mapStateProps = (state) => {
 
 // Export the Component and Connecting the Redux store
 export default connect(mapStateProps)(CartAttributes);
-s;

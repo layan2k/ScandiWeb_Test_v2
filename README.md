@@ -1,10 +1,27 @@
-# Getting Started with Create React App
+# Mini Ecommerce
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This an assessment test for a position at ScandiWeb.
+Its a basic frontend Ecommerce page.
 
-## Available Scripts
+## Backend API (Graphql)
 
-In the project directory, you can run:
+- [API](https://github.com/scandiweb/junior-react-endpoint)
+- [Opus](https://www.npmjs.com/package/@tilework/opus)
+
+## Documentation
+
+- [React](https://reactjs.org/docs/getting-started.html)
+- [GraphQl](https://graphql.org/learn/)
+
+## Details
+
+- Ability to add/remove products and change their amounts in cart - on the cart page itself, PLP and PDP provided.
+- For products that have various options (attributes) - the options should be selected.
+- The selected options of added to cart products are visible in cart overlay and in cart page.
+- If an attribute is a swatch attribute (type = swatch), a representation of the value is rendered on PDP and PLP, rather than text description (e.g. the color itself, not "Blue" or "0000FF")
+- Filtering products by category name for all of the categories from BackEnd
+- The descriptions provided in HTML format should be parsed and presented as HTML, not as plain text
+- Ability to change the currency of the store to one of the available currencies
 
 ### `yarn start`
 
@@ -39,32 +56,6 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+## Authors
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [Leslie Shumba](https://github.com/layan2k)
