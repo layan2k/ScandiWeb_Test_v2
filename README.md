@@ -22,6 +22,7 @@ Its a basic frontend Ecommerce page.
 - Filtering products by category name for all of the categories from BackEnd
 - The descriptions provided in HTML format should be parsed and presented as HTML, not as plain text
 - Ability to change the currency of the store to one of the available currencies
+- To Delete Item from Cart, Reduce the quantity until Item has been removed from the Cart
 
 ## Lessons Learned
 

@@ -96,6 +96,21 @@ const AddToButton = styled.div`
     color: white;
     cursor: pointer;
 `;
+// Back To Shop Text
+const BackToShopText = styled.div`
+    margin-top: 12px;
+    color: #1d1f22;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 400;
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
+    &:active {
+        color: #5ece7b;
+    }
+`;
 // Return Home Button
 const BackButton = styled.div`
     margin-top: 20px;
@@ -202,9 +217,9 @@ class ProductPage extends Component {
             console.log('loading...');
         }
 
+        //Send Item To Cart Function
         const SendCart = (data) => {
             this.props.addToCart(data);
-            this.props.navigate('/cart');
         };
 
         if (data.inStock === true) {
@@ -248,6 +263,11 @@ class ProductPage extends Component {
                             <AddToButton onClick={() => SendCart(data.id)}>
                                 ADD TO CART
                             </AddToButton>
+                            <BackToShopText
+                                onClick={() => this.props.navigate('/')}
+                            >
+                                Back To Shop
+                            </BackToShopText>
                             <Desc>
                                 {description
                                     .replace('<p>', '')

@@ -7,6 +7,7 @@ import HandleCartAttributes from '../components/CartComponents/handleCartAttribu
 import CartPrices from '../components/CartComponents/CartPrices';
 import ImageGallery from '../components/CartComponents/ImageGallery';
 import { adjustQty, removeFromCart } from '../redux/action/actions';
+import { Link } from 'react-router-dom';
 
 // Container
 const Container = styled.div`
@@ -23,11 +24,31 @@ const Container = styled.div`
     }
 `;
 // Cart Haeder
+const HeadingContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
 const Header = styled.h1`
     font-size: 32px;
     font-weight: 700;
     display: flex;
     align-items: center;
+`;
+// Back To Shop Text
+const BackToShopText = styled.div`
+    margin-top: 12px;
+    color: #1d1f22;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 400;
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
+    &:active {
+        color: #5ece7b;
+    }
 `;
 // Items Container holds the  Cart Items
 const ItemsContainer = styled.div`
@@ -340,8 +361,13 @@ class Cart extends Component {
 
         return (
             <Container>
-                {/* Cart Header */}
-                <Header>CART</Header>
+                <HeadingContainer>
+                    {/* Cart Header */}
+                    <Header>CART</Header>
+                    <Link to="/" style={{ textDecoration: 'none' }}>
+                        <BackToShopText>Back To Shop</BackToShopText>
+                    </Link>
+                </HeadingContainer>
                 {/* Cart Items */}
                 {cart.map((data, i) => (
                     <ItemsContainer key={i}>
