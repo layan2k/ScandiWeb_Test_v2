@@ -6,15 +6,16 @@ import styled from 'styled-components';
 
 // Mini image Container
 const ImageContainer = styled.div`
-    height: 87.61px;
+    height: 88px;
     width: 88px;
-    padding: 3px;
 `;
 // Image
 const Image = styled.img`
     width: 84;
-    height: 83.61px;
-    object-fit: cover;
+    height: 84px;
+    object-fit: contain;
+    position: relative;
+    z-index: -1;
 `;
 
 // image Class

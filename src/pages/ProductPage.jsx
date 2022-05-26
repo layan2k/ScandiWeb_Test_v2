@@ -9,6 +9,7 @@ import MiniImageCard from '../components/ProductPageComponents/MiniImageCard';
 import PDPOptions from '../components/ProductPageComponents/PDPOptions';
 import { getProductsById } from '../queries/getProductById';
 import { addToCart } from '../redux/action/actions';
+import { Markup } from 'interweave';
 
 // Main Comtainer
 const Container = styled.div`
@@ -18,19 +19,27 @@ const Container = styled.div`
 const Wrapper = styled.div`
     padding: 0 100px;
     padding-top: 73px;
-    padding-bottom: 178px;
+    padding-bottom: 50px;
     display: flex;
-    @media (max-width: 1400px) {
-        padding: 0 95px;
+    @media (max-width: 1366px) {
+        padding: 0 50px;
         padding-top: 73px;
-        padding-bottom: 178px;
+        padding-bottom: 50px
+    }
+    @media (max-width: 1280px) {
+        padding: 0 25px;
+        padding-top: 73px;
+        padding-bottom: 50px
     }
 `;
 // Left Image Toggle Gallary Design
 const Left = styled.div`
     display: flex;
     flex-direction: column;
-    height: auto;
+    height: 400px;
+    overflow-y: ${(props) => (props.imageno) ? 'scroll': 'hidden'};
+    overflow-x: hidden;
+    align-items: center;
 `;
 const LeftImg = styled.div`
     cursor: pointer;
@@ -139,6 +148,8 @@ const Desc = styled.div`
     font-weight: 400;
     font-size: 16px;
     color: #1d1f22;
+    max-height: 200px;
+    margin-bottom: 100px;
 `;
 
 // Get id and useNavigate from router Custom Functiom
@@ -178,41 +189,22 @@ class ProductPage extends Component {
     render() {
         // variables
         let description = '';
+        let ScrollImg = false
         const data = this.state.data;
         const images = this.state.images;
+        if(images.length > 1){
+                ScrollImg = true
+        }
+        console.log(images.length)
         const prices = data.prices;
         description = String(data.description);
+        const currentCurrency = this.props.currency.currency;
 
-        const currentCurrency = () => {
-            const currentCurrency = this.props.currency;
-            let currency = 0;
-            switch (currentCurrency.currency) {
-                case 'USD':
-                    currency = 0;
-                    break;
-                case 'GBP':
-                    currency = 1;
-                    break;
-                case 'AUD':
-                    currency = 2;
-                    break;
-                case 'JPY':
-                    currency = 3;
-                    break;
-                case 'RUB':
-                    currency = 4;
-                    break;
-                default:
-                    currency = 5;
-            }
-            return currency;
-        };
-        const displayCurrency = currentCurrency();
         let PriceText = '';
         if (Array.isArray(prices)) {
             PriceText =
-                prices[displayCurrency].currency.symbol +
-                prices[displayCurrency].amount;
+                prices[currentCurrency].currency.symbol +
+                prices[currentCurrency].amount;
         } else {
             console.log('loading...');
         }
@@ -222,12 +214,13 @@ class ProductPage extends Component {
             this.props.addToCart(data);
         };
 
+
         if (data.inStock === true) {
             return (
                 <Container>
                     <Wrapper>
                         {/* Left Side */}
-                        <Left>
+                        <Left imageno={ScrollImg}>
                             {images.map((data, i) => {
                                 return (
                                     <LeftImg
@@ -269,11 +262,7 @@ class ProductPage extends Component {
                                 Back To Shop
                             </BackToShopText>
                             <Desc>
-                                {description
-                                    .replace('<p>', '')
-                                    .replace('</p>', '')
-                                    .replace('<h1>', '')
-                                    .replace('</h1>', '')}
+                                <Markup content={description} />
                             </Desc>
                         </Right>
                     </Wrapper>
@@ -319,7 +308,7 @@ class ProductPage extends Component {
                                 BACK TO SHOP ↰
                             </BackButton>
                             <Desc>
-                                <p>Product is Currently Unavailable</p>
+                            <Markup content={description} />
                             </Desc>
                         </Right>
                     </Wrapper>

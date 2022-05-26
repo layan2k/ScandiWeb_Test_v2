@@ -4,7 +4,7 @@
 // Retrieves State from local storage
 const initialCurrency = () => {
     const Getcurrency = localStorage.getItem('currency');
-    let currency = 'USD';
+    let currency = 0;
     if (Getcurrency) {
         currency = JSON.parse(Getcurrency);
     }

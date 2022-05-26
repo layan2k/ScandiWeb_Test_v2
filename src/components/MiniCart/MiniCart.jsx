@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { GetAllCurrencies } from '../../queries/GetAllCurrencies';
 import { adjustQty, removeFromCart } from '../../redux/action/actions';
 import HandleMiniCartAttri from './handleMiniCartAttri';
 import MiniCartImageGallery from './MiniCartImageGallery';
@@ -32,6 +33,11 @@ const ItemsContainer = styled.div`
     flex-direction: column;
     margin-top: 55px;
 `;
+const CartItemsContainerBox = styled.div`
+    max-height:350px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+`
 // Cart Item
 const CartItemContainer = styled.div`
     height: auto;
@@ -204,47 +210,34 @@ class MiniCart extends Component {
         this.state = {
             cartCount: 0,
             total: 0,
-            tax: 0
+            tax: 0,
+            currencies: [],
         };
     }
-
+                // fetching products for the redux store
+                fetchCurrenciesForStore = async () => {
+                    const response = await GetAllCurrencies().catch((err) =>
+                        console.log(err)
+                    );
+                    this.setState({
+                        currencies: response
+                    })
+                };
     // Loads data and sets state when first rendered
     componentDidMount() {
+        this.fetchCurrenciesForStore()
         // get cart information from the redux store
         const cart = this.props.cart;
         //  Currency Handler To Determine which currency is in use
-        const currentCurrency = () => {
-            const currentCurrency = this.props.currency;
-            let currency = 0;
-            switch (currentCurrency.currency) {
-                case 'USD':
-                    currency = 0;
-                    break;
-                case 'GBP':
-                    currency = 1;
-                    break;
-                case 'AUD':
-                    currency = 2;
-                    break;
-                case 'JPY':
-                    currency = 3;
-                    break;
-                case 'RUB':
-                    currency = 4;
-                    break;
-                default:
-                    currency = 5;
-            }
-            return currency;
-        };
+            const currentCurrency = this.props.currency.currency;
+
         // Currency Handler is used to determine which position our Values are in the Array
-        const displayCurrency = currentCurrency();
         let count = 0;
         let total = 0;
         // For each to get out products qty and  Product Total
         cart.forEach((item) => {
             count += item.qty;
-            total += item.prices[displayCurrency].amount * item.qty;
+            total += item.prices[currentCurrency].amount * item.qty;
         });
         // tax and total calculation tax included
         const tax = 0.21 * total;
@@ -264,41 +257,19 @@ class MiniCart extends Component {
             this.props.cart !== prevProps.cart ||
             this.props.currency !== prevProps.currency
         ) {
+            this.fetchCurrenciesForStore()
             // get cart information from the redux store
             const cart = this.props.cart;
             //  Currency Handler To Decide which currency is in use
-            const currentCurrency = () => {
-                const currentCurrency = this.props.currency;
-                let currency = 0;
-                switch (currentCurrency.currency) {
-                    case 'USD':
-                        currency = 0;
-                        break;
-                    case 'GBP':
-                        currency = 1;
-                        break;
-                    case 'AUD':
-                        currency = 2;
-                        break;
-                    case 'JPY':
-                        currency = 3;
-                        break;
-                    case 'RUB':
-                        currency = 4;
-                        break;
-                    default:
-                        currency = 5;
-                }
-                return currency;
-            };
+                const currentCurrency = this.props.currency.currency;
+
             // Currency Handler is used to determine which positions our Values are in the Array
-            const displayCurrency = currentCurrency();
             let count = 0;
             let total = 0;
             // For each to get out products qty and Product Total
             cart.forEach((item) => {
                 count += item.qty;
-                total += item.prices[displayCurrency].amount * item.qty;
+                total += item.prices[currentCurrency].amount * item.qty;
             });
             // tax and total calculation tax included
             const tax = 0.21 * total;
@@ -332,39 +303,22 @@ class MiniCart extends Component {
         };
 
         // Currency Handler To determine the current symbol been utilizes
-        const currentCurrency = () => {
             // get currency values from the redux store
             const currentCurrency = this.props.currency;
-            let currency = '$';
-            switch (currentCurrency.currency) {
-                case 'USD':
-                    currency = '$';
-                    break;
-                case 'GBP':
-                    currency = '£';
-                    break;
-                case 'AUD':
-                    currency = 'A$';
-                    break;
-                case 'JPY':
-                    currency = '¥';
-                    break;
-                case 'RUB':
-                    currency = '₽';
-                    break;
-                default:
-                    currency = '$';
+            const CurrencyIndex = currentCurrency.currency
+            const currencies = this.state.currencies.currencies
+            let ArrayCurrencies = []
+            if (Array.isArray(currencies)===true){
+                ArrayCurrencies = currencies.map( item => item.symbol)
             }
-            return currency;
-        };
-        // Returns the current  currency symbol as string
-        const displayCurrency = currentCurrency();
+;
 
         return (
             <Container>
                 {/* Total Qty */}
                 <Header>My Bag, {this.state.cartCount} items</Header>
                 {/* Cart Items */}
+                <CartItemsContainerBox>
                 {cart.map((data, i) => (
                     <ItemsContainer key={i}>
                         <CartItemContainer>
@@ -414,6 +368,7 @@ class MiniCart extends Component {
                         </CartItemContainer>
                     </ItemsContainer>
                 ))}
+                </CartItemsContainerBox>
                 {/* Total Summary */}
                 <Total>
                     <TotalProperties>
@@ -421,7 +376,7 @@ class MiniCart extends Component {
                     </TotalProperties>
                     <TotalValues>
                         <TotalValueItems>
-                            {displayCurrency + this.state.total}
+                            {ArrayCurrencies[CurrencyIndex] + this.state.total}
                         </TotalValueItems>
                     </TotalValues>
                 </Total>

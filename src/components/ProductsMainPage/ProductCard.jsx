@@ -52,7 +52,6 @@ const CircleIcon = styled.img`
 
 // Instock Card Design
 const CardBox = styled.div`
-    margin-bottom: 103px;
     height: 444px;
     max-height: 444px;
     max-width: 386px;
@@ -71,16 +70,24 @@ const CardBox = styled.div`
         display: flex;
     }
 `;
-// Main Product Image design
-const MainImage = styled.img`
+// Image Container
+const ImageContainer = styled.div`
     width: 356px;
     height: 338px;
-    object-fit: fill;
-    z-index: 0;
+    border: none;
     &:hover {
         box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
     }
 `;
+
+// Main Product Image design
+const MainImage = styled.img`
+    position: relative;
+    width: 356px;
+    height: 338px;
+    object-fit: contain;
+    z-index: -1;
+`
 // Product Title
 const Title = styled.h2`
     font-family: 'raleway';
@@ -102,7 +109,6 @@ const Price = styled.h2`
 
 const CardBoxDisabled = styled.div`
     font-family: 'raleway';
-    margin-bottom: 103px;
     height: 444px;
     max-height: 444px;
     max-width: 386px;
@@ -118,9 +124,11 @@ const CardBoxDisabled = styled.div`
 `;
 // Disabled Image Opacity at 50%
 const DisableImage = styled.img`
+    position: relative;
+    z-index: -1;
     width: 356px;
     height: 338px;
-    object-fit: fill;
+    object-fit: contain;
     opacity: 0.5;
     &:hover {
         box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
@@ -156,6 +164,28 @@ const DisabledPrices = styled.h2`
 `;
 // Card Component Entry
 class Card extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            cartOpenCondition: false,
+            currency: this.props.currency
+        };
+    }
+        // Checks if the cart is opened when page Renders
+        componentDidMount() {
+            this.setState({
+                cartOpenCondition: this.props.cartCondition.isCartOpened
+            });
+        }
+        //Updates the state when thw cart is enable therefore allowing a background to dynamically render
+        componentDidUpdate(prevProps) {
+            if (this.props.cartCondition !== prevProps.cartCondition) {
+                this.setState({
+                    cartOpenCondition: this.props.cartCondition.isCartOpened
+                });
+            }
+        }
+
     render() {
         // Variables to manage data
         const data = this.props.data;
@@ -163,31 +193,7 @@ class Card extends Component {
         const prices = data.prices;
 
         // Currency Handler
-        const currentCurrency = () => {
-            const currentCurrency = this.props.currency;
-            let currency = 0;
-            switch (currentCurrency.currency) {
-                case 'USD':
-                    currency = 0;
-                    break;
-                case 'GBP':
-                    currency = 1;
-                    break;
-                case 'AUD':
-                    currency = 2;
-                    break;
-                case 'JPY':
-                    currency = 3;
-                    break;
-                case 'RUB':
-                    currency = 4;
-                    break;
-                default:
-                    currency = 5;
-            }
-            return currency;
-        };
-        const displayCurrency = currentCurrency();
+            const currentCurrency = this.props.currency.currency;
 
         // Stock Available Card
         if (data.inStock === true) {
@@ -195,17 +201,18 @@ class Card extends Component {
                 <CardBox>
                     <Link
                         to={`product/${data.id}`}
-                        style={{ textDecoration: 'none' }}
+                        className='linkto'
                     >
+                        <ImageContainer>
                         <MainImage src={images[0]} />
-                        <Title>{data.name}</Title>
+                        </ImageContainer>
+                        <Title>{`${data.brand} ${data.name}`}</Title>
                         <Price>
-                            {prices[displayCurrency].currency.symbol +
-                                prices[displayCurrency].amount}
+                            {prices[currentCurrency].currency.symbol +
+                                prices[currentCurrency].amount}
                         </Price>
                     </Link>
                     {/* Add to Icon Cart Appears only when the product does not have any attributes to  */}
-                    {data.attributes.length === 0 && (
                         <CartCircle
                             onClick={() => this.props.addToCart(data.id)}
                             value="ADD TO CART"
@@ -218,7 +225,6 @@ class Card extends Component {
                                 </CirclesConatiner>
                             </CartIconContainer>
                         </CartCircle>
-                    )}
                 </CardBox>
             );
         }
@@ -228,14 +234,16 @@ class Card extends Component {
                 <CardBoxDisabled>
                     <Link
                         to={`product/${data.id}`}
-                        style={{ textDecoration: 'none' }}
+                        className='linkto'
                     >
+                        <ImageContainer>
                         <DisableImage src={images[0]} />
+                        </ImageContainer>
                         <StockTitle>OUT OF STOCK</StockTitle>
-                        <DisabledTitle>{data.name}</DisabledTitle>
+                        <DisabledTitle>{`${data.brand} ${data.name}`}</DisabledTitle>
                         <DisabledPrices>
-                            {prices[displayCurrency].currency.symbol +
-                                prices[displayCurrency].amount}
+                            {prices[currentCurrency].currency.symbol +
+                                prices[currentCurrency].amount}
                         </DisabledPrices>
                     </Link>
                 </CardBoxDisabled>
@@ -249,7 +257,8 @@ class Card extends Component {
 // Getting the currency state from Redux
 const mapStateProps = (state) => {
     return {
-        currency: state.currency
+        currency: state.currency,
+        cartCondition: state.isCartCondition
     };
 };
 

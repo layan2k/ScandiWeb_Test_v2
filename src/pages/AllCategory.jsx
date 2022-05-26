@@ -9,14 +9,18 @@ import { GetCategory } from '../queries/GetCategory';
 // Main Container
 const Container = styled.div`
     height: auto;
+    padding-bottom: 100px;
 `;
 // Wrapper
 const Wrapper = styled.div`
     padding: 0 100px;
     display: flex;
     flex-direction: column;
-    @media (max-width: 1400px) {
-        padding: 0 95px;
+    @media (max-width: 1366px) {
+        padding: 0 50px;
+    }
+    @media (max-width: 1280px) {
+        padding: 0 25px;
     }
 `;
 // Category Name Heading
@@ -29,10 +33,16 @@ const Header = styled.div`
 
 const CardContainer = styled.div`
     margin-top: 87.82px;
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
+    display: inline-grid;
+    justify-content: center;
     align-items: center;
+    gap: 80px 56px;
+    grid-template-columns: auto auto auto;
+    grid-template-areas:
+    ". . ."
+    ". . ."
+    ". . .";
+
 `;
 // Basic Loading  Template whilst waiting for Data from the Backend
 

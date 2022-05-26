@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { GetAllCurrencies } from '../queries/GetAllCurrencies';
 import { changeCart } from '../redux/action/actions';
 import MiniCart from './MiniCart/MiniCart';
 
@@ -12,16 +13,26 @@ import MiniCart from './MiniCart/MiniCart';
 const Container = styled.div`
     height: 80px;
     max-height: 80px;
+    width: 1440px;
+    @media (max-width: 1366px) {
+        width: 1366px;
+    }
+    @media (max-width: 1280px) {
+        width: 1280px;
+    }
 `;
 
 const Wrapper = styled.div`
-    padding: 0 100px;
+    padding:0 100px;
     height: 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    @media (max-width: 1400px) {
-        padding: 0 95px;
+    @media (max-width: 1366px) {
+        padding: 0 50px;
+    }
+    @media (max-width: 1280px) {
+        padding: 0 25px;
     }
 `;
 // Left Side Container
@@ -107,16 +118,14 @@ const DropDownListContainer = styled.div`
 // Dropdown ul (Wrapper in Container)
 const DropDownList = styled.ul`
     width: 114px;
+    overflow: hidden;
     padding: 0;
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-    box-sizing: border-box;
+    margin: 0;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
     color: #1d1f22;
     font-size: 18px;
     font-weight: 500;
     text-align: center;
-    &:first-child {
-        padding-top: 0.8em;
-    }
 `;
 // Dropdown Currency List Item
 const ListItem = styled.li`
@@ -129,7 +138,7 @@ const ListItem = styled.li`
     &:hover {
         background-color: #eeeeee;
     }
-    margin-bottom: 0.8em;
+    margin-top: 0.8em;
 `;
 
 // Cart
@@ -177,7 +186,6 @@ const CirclesConatiner = styled.div`
 const CircleIcon = styled.img``;
 // MinCart card
 const CartCard = styled.div`
-    height: auto;
     width: 325px;
     border-radius: 0px;
     padding: 0 5px;
@@ -189,9 +197,16 @@ const CartCard = styled.div`
     align-items: center;
     justify-content: center;
     background-color: white;
-    z-index: 1;
+    z-index: 5;
     gap: 32px;
+    @media (max-width: 1366px) {
+        margin-right: 300px;
+    }
+    @media (max-width: 1280px) {
+        margin-right: 350px;
+    }
 `;
+
 
 // Class Component For  Navbar
 class Navbar extends Component {
@@ -201,7 +216,8 @@ class Navbar extends Component {
             isOpen: false,
             arrow: false,
             cart: false,
-            quantity: 0
+            quantity: 0,
+            currencies: []
         };
         // Ref for clicks outside Container
         this.wrapperRef = React.createRef();
@@ -216,11 +232,21 @@ class Navbar extends Component {
     changeCategory = (data) => {
         this.props.changeCurrentCategory(data);
     };
+        // fetching currencies for the redux store
+        fetchCurrenciesForStore = async () => {
+            const response = await GetAllCurrencies().catch((err) =>
+                console.log(err)
+            );
+            this.setState({
+                currencies: response
+            })
+        };
 
     // Loads data when the page is firt renderd
     // ,sets  states
     // and monitors mouse movement and clicks
     componentDidMount() {
+        this.fetchCurrenciesForStore()
         const cart = this.props.cart;
         let count = 0;
         cart.forEach((item) => {
@@ -238,6 +264,7 @@ class Navbar extends Component {
     // and monitors mouse movement and clicks
     componentDidUpdate(prevProps) {
         if (this.props.cart !== prevProps.cart) {
+            this.fetchCurrenciesForStore()
             const cart = this.props.cart;
             let count = 0;
             cart.forEach((item) => {
@@ -313,34 +340,13 @@ class Navbar extends Component {
 
         // Function that get the current set Currency from the reducer
         // And Sets the current symbol on Display
-        const displayCurrency = () => {
-            const currentCurrency = this.props.currency;
-            let symbol = ' ';
-            // Switch Satement to decide which text to display
-            switch (currentCurrency.currency) {
-                case 'USD':
-                    symbol = '$';
-                    break;
-                case 'GBP':
-                    symbol = '£';
-                    break;
-                case 'AUD':
-                    symbol = 'A$';
-                    break;
-                case 'JPY':
-                    symbol = '¥';
-                    break;
-                case 'RUB':
-                    symbol = '₽';
-                    break;
-                default:
-                    symbol = '$';
-            }
-            return symbol;
-        };
-
-        const displayTextCurrency = displayCurrency();
-
+        const currentCurrency = this.props.currency;
+        const CurrencyIndex = currentCurrency.currency
+        const currencies = this.state.currencies.currencies
+        let ArrayCurrencies = []
+        if (Array.isArray(currencies)===true){
+            ArrayCurrencies = currencies.map( item => item.symbol)
+        }
         return (
             <Container>
                 <Wrapper>
@@ -376,7 +382,7 @@ class Navbar extends Component {
                             ref={this.wrapperRef}
                         >
                             <DropDownHeader>
-                                {displayTextCurrency}{' '}
+                                {ArrayCurrencies[CurrencyIndex]}{' '}
                                 <DownIcon
                                     src="/assets/Vector.svg"
                                     rotatearrow={this.state.arrow}
@@ -385,46 +391,16 @@ class Navbar extends Component {
                             {this.state.isOpen && (
                                 <DropDownListContainer>
                                     <DropDownList>
-                                        <ListItem
-                                            value="USD"
+                                        {currencies.map((item, i)=>
+                                    <ListItem key={i}
+                                            value={item.label}
                                             onClick={() =>
-                                                this.changeCurrency('USD')
+                                                this.changeCurrency(i)
                                             }
                                         >
-                                            $ USD
+                                            {`${item.symbol} ${item.label}`}
                                         </ListItem>
-                                        <ListItem
-                                            value="GBP"
-                                            onClick={() =>
-                                                this.changeCurrency('GBP')
-                                            }
-                                        >
-                                            £ GBP
-                                        </ListItem>
-                                        <ListItem
-                                            value="AUD"
-                                            onClick={() =>
-                                                this.changeCurrency('AUD')
-                                            }
-                                        >
-                                            A$ AUD
-                                        </ListItem>
-                                        <ListItem
-                                            value="JPY"
-                                            onClick={() =>
-                                                this.changeCurrency('JPY')
-                                            }
-                                        >
-                                            ¥ JPY
-                                        </ListItem>
-                                        <ListItem
-                                            value="RUB"
-                                            onClick={() =>
-                                                this.changeCurrency('RUB')
-                                            }
-                                        >
-                                            ₽ RUB
-                                        </ListItem>
+                                        )}
                                     </DropDownList>
                                 </DropDownListContainer>
                             )}

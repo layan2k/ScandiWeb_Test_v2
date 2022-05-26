@@ -15,6 +15,8 @@ const Image = styled.img`
     height: 540px;
     object-fit: contain;
     transition: all 0.3s ease-in;
+    position: relative;
+    z-index: -1;
 `;
 // Out Of Stock Image
 // Opacity at 50%
@@ -24,6 +26,8 @@ const ImageDisabled = styled.img`
     object-fit: contain;
     transition: all 0.3s ease-in;
     opacity: 0.5;
+    position: relative;
+    z-index: -1;
 `;
 // Image Text out of stock on top of Main Image
 const TextImage = styled.div`

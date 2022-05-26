@@ -7,6 +7,8 @@ import styled from 'styled-components';
 // Main Container
 const Container = styled.div`
     display: flex;
+    position: relative;
+    z-index: -1;
 `;
 // Container that holds Mapped Items
 const ItemContainer = styled.div`

@@ -1,7 +1,21 @@
-# Mini Ecommerce
+# Mini Ecommerce V2.0
 
 This an assessment test for a position at ScandiWeb.
 Its a basic frontend Ecommerce page.
+
+## Change Log
+
+- Added Product Brand before product Name on the product Cart,
+- Cart Icon is now been shown on every available product in the store.
+- Cartegory Page has been change from using the flex box to using the grid system.
+- Background Overlay feature when MiniCart(CartOverlay) is Opened now covers all content except the NavBar
+- Category Page Information now Centered.
+- Cart Item price is now Static on the MiniCart dosen't change on quantity adjustments.
+- MiniCart now has a Max-Height and a scrollbar that handled ovelaying products
+- HTML content is now correctly handled by the use of interweave
+- Image Distortion has been corrected by changing object-fit from the fill to the contain property
+- Added Responsive Design for the following Screen Sizes, 1366px and 1280px
+- Removed Hardcoded Currencies, it now controlled by the State and when loaded for the first time the default currency is the first Currency read from the backend in this case
 
 ## Backend API (Graphql)
 

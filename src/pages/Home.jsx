@@ -12,8 +12,10 @@ import ProductPage from './ProductPage';
 // Container for all the Routed Pages , background updates
 // when the Mini Cart Component is opened =
 const Container = styled.div`
-    background: ${(props) =>
+    background-color: ${(props) =>
         props.cart === true ? 'rgba(57, 55, 72, 0.22)' : 'none'};
+    background-size: cover;
+    z-index: 2;
 `;
 
 // Class Component

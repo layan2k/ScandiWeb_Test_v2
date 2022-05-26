@@ -33,7 +33,7 @@ const BoxContainer = styled.div`
 `;
 // Box That holds the attributes Attribute Txt
 // Changes Background if user chooses that text box
-const Box = styled.div`
+const MainBox = styled.div`
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 16px;
     font-weight: 400;
@@ -138,14 +138,14 @@ class TextAttrBox extends Component {
                         <MainHeading>{name}:</MainHeading>
                         <BoxContainer>
                             {refinedata.map((info, i) => (
-                                <Box
+                                <MainBox
                                     title={info.displayValue}
                                     current={activeText === i ? true : false}
                                     onClick={() => changeSizeStateIndex(i)}
                                     key={i}
                                 >
                                     {info.value}
-                                </Box>
+                                </MainBox>
                             ))}
                         </BoxContainer>
                     </ItemContainer>

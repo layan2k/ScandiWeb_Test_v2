@@ -8,6 +8,7 @@ import CartPrices from '../components/CartComponents/CartPrices';
 import ImageGallery from '../components/CartComponents/ImageGallery';
 import { adjustQty, removeFromCart } from '../redux/action/actions';
 import { Link } from 'react-router-dom';
+import { GetAllCurrencies } from '../queries/GetAllCurrencies';
 
 // Container
 const Container = styled.div`
@@ -16,10 +17,15 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     height: auto;
-    padding-bottom: 274px;
-    @media (max-width: 1400px) {
-        padding: 0 95px;
-        padding-bottom: 274px;
+    padding-bottom: 100px;
+    @media (max-width: 1366px) {
+        padding: 0 50px;
+        padding-bottom: 100px;
+        padding-top: 80px;
+    }
+    @media (max-width: 1280px) {
+        padding: 0 25px;
+        padding-bottom: 100px;
         padding-top: 80px;
     }
 `;
@@ -132,6 +138,12 @@ const MinusBox = styled.div`
     border: 1px solid #1d1f22;
     cursor: pointer;
 `;
+const MinusPosition = styled.span`
+    display: flex;
+    margin-bottom: 10px;
+
+
+`
 // Current Product Quantity
 const Quantity = styled.div`
     display: flex;
@@ -180,6 +192,8 @@ const TotalValueItems = styled.div`
 `;
 // Order Button
 const OrderButton = styled.div`
+    position: relative;
+    z-index: -1;
     margin-top: 16px;
     display: flex;
     justify-content: center;
@@ -204,46 +218,32 @@ class Cart extends Component {
         this.state = {
             cartCount: 0,
             total: 0,
-            tax: 0
+            tax: 0,
+            currencies: [],
         };
     }
+                // fetching products for the redux store
+                fetchCurrenciesForStore = async () => {
+                    const response = await GetAllCurrencies().catch((err) =>
+                        console.log(err)
+                    );
+                    this.setState({
+                        currencies: response
+                    })
+                };
     // Loads data and sets state when first rendered
     componentDidMount() {
+        this.fetchCurrenciesForStore()
         // get cart information from the redux store
         const cart = this.props.cart;
         //  Currency Handler To Determine which currency is in use
-        const currentCurrency = () => {
-            const currentCurrency = this.props.currency;
-            let currency = 0;
-            switch (currentCurrency.currency) {
-                case 'USD':
-                    currency = 0;
-                    break;
-                case 'GBP':
-                    currency = 1;
-                    break;
-                case 'AUD':
-                    currency = 2;
-                    break;
-                case 'JPY':
-                    currency = 3;
-                    break;
-                case 'RUB':
-                    currency = 4;
-                    break;
-                default:
-                    currency = 5;
-            }
-            return currency;
-        };
-        // Currency Handler is used to determine which position our Values are in the Array
-        const displayCurrency = currentCurrency();
+            const currentCurrency = this.props.currency.currency;
         let count = 0;
         let total = 0;
         // For each to get out products qty and  Product Total
         cart.forEach((item) => {
             count += item.qty;
-            total += item.prices[displayCurrency].amount * item.qty;
+            total += item.prices[currentCurrency].amount * item.qty;
         });
         // tax and total calculation tax included
         const tax = 0.21 * total;
@@ -262,41 +262,17 @@ class Cart extends Component {
             this.props.cart !== prevProps.cart ||
             this.props.currency !== prevProps.currency
         ) {
+            this.fetchCurrenciesForStore()
             // get cart information from the redux store
             const cart = this.props.cart;
             //  Currency Handler To Decide which currency is in use
-            const currentCurrency = () => {
-                const currentCurrency = this.props.currency;
-                let currency = 0;
-                switch (currentCurrency.currency) {
-                    case 'USD':
-                        currency = 0;
-                        break;
-                    case 'GBP':
-                        currency = 1;
-                        break;
-                    case 'AUD':
-                        currency = 2;
-                        break;
-                    case 'JPY':
-                        currency = 3;
-                        break;
-                    case 'RUB':
-                        currency = 4;
-                        break;
-                    default:
-                        currency = 5;
-                }
-                return currency;
-            };
-            // Currency Handler is used to determine which positions our Values are in the Array
-            const displayCurrency = currentCurrency();
+                const currentCurrency = this.props.currency.currency;
             let count = 0;
             let total = 0;
             // For each to get out products qty and Product Total
             cart.forEach((item) => {
                 count += item.qty;
-                total += item.prices[displayCurrency].amount * item.qty;
+                total += item.prices[currentCurrency].amount * item.qty;
             });
             // tax and total calculation tax included
             const tax = 0.21 * total;
@@ -309,6 +285,7 @@ class Cart extends Component {
             });
         }
     }
+
     render() {
         // loads  cart from the redux store
         let cart = [];
@@ -331,40 +308,21 @@ class Cart extends Component {
         };
 
         // Currency Handler To determine the current symbol been utilizes
-        const currentCurrency = () => {
             const currentCurrency = this.props.currency;
-            // get currency values from the redux store
-            let currency = '$';
-            switch (currentCurrency.currency) {
-                case 'USD':
-                    currency = '$';
-                    break;
-                case 'GBP':
-                    currency = '£';
-                    break;
-                case 'AUD':
-                    currency = 'A$';
-                    break;
-                case 'JPY':
-                    currency = '¥';
-                    break;
-                case 'RUB':
-                    currency = '₽';
-                    break;
-                default:
-                    currency = '$';
+            const CurrencyIndex = currentCurrency.currency
+            const currencies = this.state.currencies.currencies
+            let ArrayCurrencies = []
+            if (Array.isArray(currencies)===true){
+                ArrayCurrencies = currencies.map( item => item.symbol)
             }
-            return currency;
-        };
-        // Returns the current  currency symbol as string
-        const displayCurrency = currentCurrency();
+
 
         return (
             <Container>
                 <HeadingContainer>
                     {/* Cart Header */}
                     <Header>CART</Header>
-                    <Link to="/" style={{ textDecoration: 'none' }}>
+                    <Link to="/" className='linkto'>
                         <BackToShopText>Back To Shop</BackToShopText>
                     </Link>
                 </HeadingContainer>
@@ -400,11 +358,9 @@ class Cart extends Component {
                                                 RemoveQty(data.id, data.qty)
                                             }
                                         >
-                                            <span
-                                                style={{ marginBottom: '10px' }}
-                                            >
+                                            <MinusPosition>
                                                 -
-                                            </span>
+                                            </MinusPosition>
                                         </MinusBox>
                                     </AdjPrice>
                                     {/* Gallery */}
@@ -425,13 +381,13 @@ class Cart extends Component {
                     </TotalProperties>
                     <TotalValues>
                         <TotalValueItems>
-                            {displayCurrency + this.state.tax}
+                            {ArrayCurrencies[CurrencyIndex] + this.state.tax}
                         </TotalValueItems>
                         <TotalValueItems>
                             {this.state.cartCount}
                         </TotalValueItems>
                         <TotalValueItems>
-                            {displayCurrency + this.state.total}
+                            {ArrayCurrencies[CurrencyIndex] + this.state.total}
                         </TotalValueItems>
                     </TotalValues>
                 </Total>

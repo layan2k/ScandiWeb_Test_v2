@@ -9,13 +9,14 @@ const Conatainer = styled.div`
     width: 200px;
     margin-left: 24px;
     position: relative;
-    z-index: 0;
 `;
 // Image
 const MainImage = styled.img`
     height: 228px;
     width: 200px;
-    object-fit: fill;
+    object-fit: contain;
+    position: relative;
+    z-index: -1;
 `;
 // Containers for the Image next and previous controls
 const ChangeImageControls = styled.div`
