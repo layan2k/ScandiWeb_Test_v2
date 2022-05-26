@@ -7,8 +7,8 @@ import { CurrencyReducer } from './CurrencyReducer';
 
 // Combine All Reducers
 export const mainReducer = combineReducers({
-    currency: CurrencyReducer,
-    category: CatergoryReducer,
-    shop: CartReducer,
-    isCartCondition: ChangeBackReducer
+  currency: CurrencyReducer,
+  category: CatergoryReducer,
+  shop: CartReducer,
+  isCartCondition: ChangeBackReducer,
 });
