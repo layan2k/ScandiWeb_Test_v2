@@ -114,8 +114,6 @@ class TextAttrBox extends Component {
     // Define the data if not undefined, to avoid page crashes due to undefined response
     if (Array.isArray(data)) {
       refinedata = data;
-    } else {
-      console.log('loading data...');
     }
 
     // Handles the  Text Selction Choices and stores that information in the redux store

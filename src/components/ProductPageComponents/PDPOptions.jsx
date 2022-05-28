@@ -40,8 +40,6 @@ class PDPOptions extends Component {
     let verifiedArray = [];
     if (Array.isArray(data)) {
       verifiedArray = data;
-    } else {
-      console.log('loading..');
     }
     return (
       <Container>

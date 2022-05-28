@@ -99,8 +99,6 @@ class MiniCartAttributes extends Component {
     let refinedata = [];
     if (Array.isArray(data)) {
       refinedata = data;
-    } else {
-      console.log('loading data...');
     }
     // Loading Users Attributes
     const activeColor = this.state.selectedColor;

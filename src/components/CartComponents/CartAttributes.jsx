@@ -100,8 +100,6 @@ class CartAttributes extends Component {
     // Define the data if not undefined, to avoid page crashes due to undefined response
     if (Array.isArray(data)) {
       refinedata = data;
-    } else {
-      console.log('loading data...');
     }
     // Loads Users Attributes
     const activeColor = this.state.selectedColor;
