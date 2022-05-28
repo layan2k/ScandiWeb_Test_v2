@@ -21,6 +21,11 @@ body {
     max-width: 1366px;
   }
 }
+@media only screen and (max-width: 2045px) {
+  body {
+    max-width: 2045px;
+  }
+}
 
 /* width */
 ::-webkit-scrollbar {

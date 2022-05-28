@@ -24,7 +24,9 @@ This an assessment test for a position at ScandiWeb. Its a basic frontend Ecomme
 - Routing added to the NavBar enabling us to navigate from other routes back to the categories page
 - Cart Flow changed to handle products with different attributes and increases the quantity of cart
   item if the same product and attributes are chosen
-- View bag button closes when the cart opens
+- View bag button closes when directed Cart Page
+- Changed assets location from public to src so that it can be compiled by Webpack
+- Max Width for app to work is 2045px
 
 ## Backend API (Graphql)
 
@@ -48,7 +50,6 @@ This an assessment test for a position at ScandiWeb. Its a basic frontend Ecomme
 - The descriptions provided in HTML format should be parsed and presented as HTML, not as plain text
 - Ability to change the currency of the store to one of the available currencies
 - To Delete Item from Cart, Reduce the quantity until Item has been removed from the Cart
-- Changed assets location from public to src so that it can be compiled by Webpack
 
 ## Lessons Learned
 

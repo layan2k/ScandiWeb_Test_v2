@@ -21,13 +21,7 @@ import Vector3 from '../assets/Vector3.svg';
 const Container = styled.div`
   height: 80px;
   max-height: 80px;
-  width: 1440px;
-  @media (max-width: 1366px) {
-    width: 1366px;
-  }
-  @media (max-width: 1280px) {
-    width: 1280px;
-  }
+  width: 100%;
 `;
 
 const Wrapper = styled.div`
