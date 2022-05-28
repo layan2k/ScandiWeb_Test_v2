@@ -27,9 +27,11 @@ class HandleCartAttributes extends Component {
   fetchData = async () => {
     const id = this.props.id;
     const response = await getProductsById(id).catch(err => console.log(err));
-    this.setState({
-      data: response.product.attributes,
-    });
+    if (response) {
+      this.setState({
+        data: response.product.attributes,
+      });
+    }
   };
 
   // gets data when the page is been renderd
@@ -39,10 +41,18 @@ class HandleCartAttributes extends Component {
   render() {
     const id = this.props.id;
     const verifiedArray = this.state.data;
+    const attributeData = this.props.attri;
     return (
       <Container>
         {verifiedArray.map((data, i) => (
-          <CartAttributes key={i} data={data.items} type={data.type} name={data.name} id={id} />
+          <CartAttributes
+            key={i}
+            data={data.items}
+            type={data.type}
+            name={data.name}
+            id={id}
+            attri={attributeData}
+          />
         ))}
       </Container>
     );

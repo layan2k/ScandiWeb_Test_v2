@@ -5,6 +5,11 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { addToCart } from '../../redux/action/actions';
+import PDPOptions from '../ProductPageComponents/PDPOptions';
+
+// Image Imports
+import CartVector from '../../assets/CartVector.svg';
+import WheelWhiteVector from '../../assets/WheelWhiteVector.svg';
 
 // Add To Cart Circle that contains the Cart Icon
 const CartCircle = styled.div`
@@ -105,6 +110,11 @@ const Price = styled.h2`
   font-weight: 500;
   text-align: left;
 `;
+
+// Attributes Container to handle our prefined set data
+const PDPContainer = styled.div`
+  display: none;
+`;
 // Out Of Stock Card Design
 
 const CardBoxDisabled = styled.div`
@@ -169,6 +179,7 @@ class Card extends Component {
     this.state = {
       cartOpenCondition: false,
       currency: this.props.currency,
+      attributes: [],
     };
   }
   // Checks if the cart is opened when page Renders
@@ -186,6 +197,12 @@ class Card extends Component {
     }
   }
 
+  getAttributes = data => {
+    this.setState({
+      attributes: data,
+    });
+  };
+
   render() {
     // Variables to manage data
     const data = this.props.data;
@@ -195,11 +212,22 @@ class Card extends Component {
     // Currency Handler
     const currentCurrency = this.props.currency.currency;
 
+    //Send Item To Cart Function
+    const SendCart = data => {
+      const attributes = this.state.attributes;
+      const payload = {
+        ...data,
+        selectedAttributes: attributes,
+      };
+      Object.freeze(payload);
+      this.props.addToCart(payload);
+    };
+
     // Stock Available Card
     if (data.inStock === true) {
       return (
         <CardBox>
-          <Link to={`product/${data.id}`} className="linkto">
+          <Link to={`/product/${data.id}`} className="linkto">
             <ImageContainer>
               <MainImage src={images[0]} />
             </ImageContainer>
@@ -209,15 +237,22 @@ class Card extends Component {
             </Price>
           </Link>
           {/* Add to Icon Cart Appears only when the product does not have any attributes to  */}
-          <CartCircle onClick={() => this.props.addToCart(data.id)} value="ADD TO CART">
+          <CartCircle onClick={() => SendCart(data)} value="ADD TO CART">
             <CartIconContainer>
-              <CartIcon src="/assets/CartVector.svg" />
+              <CartIcon src={CartVector} />
               <CirclesConatiner>
-                <CircleIcon src="/assets/WheelWhiteVector.svg" />
-                <CircleIcon src="/assets/WheelWhiteVector.svg" />
+                <CircleIcon src={WheelWhiteVector} />
+                <CircleIcon src={WheelWhiteVector} />
               </CirclesConatiner>
             </CartIconContainer>
           </CartCircle>
+          <PDPContainer>
+            <PDPOptions
+              data={data.attributes}
+              iddet={data.id}
+              handleAttributes={this.getAttributes}
+            />
+          </PDPContainer>
         </CardBox>
       );
     }
@@ -225,7 +260,7 @@ class Card extends Component {
     else {
       return (
         <CardBoxDisabled>
-          <Link to={`product/${data.id}`} className="linkto">
+          <Link to={`/product/${data.id}`} className="linkto">
             <ImageContainer>
               <DisableImage src={images[0]} />
             </ImageContainer>
@@ -254,7 +289,7 @@ const mapStateProps = state => {
 // Adding Item to cart
 const mapDispatchToProps = dispatch => {
   return {
-    addToCart: id => dispatch(addToCart(id)),
+    addToCart: data => dispatch(addToCart(data)),
   };
 };
 

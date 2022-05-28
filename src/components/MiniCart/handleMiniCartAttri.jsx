@@ -38,10 +38,18 @@ class HandleMiniCartAttri extends Component {
   render() {
     const id = this.props.id;
     const verifiedArray = this.state.data;
+    const attributeData = this.props.attri;
     return (
       <Container>
         {verifiedArray.map((data, i) => (
-          <MiniCartAttributes key={i} data={data.items} type={data.type} name={data.name} id={id} />
+          <MiniCartAttributes
+            key={i}
+            data={data.items}
+            type={data.type}
+            name={data.name}
+            id={id}
+            attributes={attributeData}
+          />
         ))}
       </Container>
     );

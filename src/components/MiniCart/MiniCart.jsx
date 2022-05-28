@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { GetAllCurrencies } from '../../queries/GetAllCurrencies';
-import { adjustQty, removeFromCart } from '../../redux/action/actions';
+import { adjustQty, changeCart, removeFromCart } from '../../redux/action/actions';
 import HandleMiniCartAttri from './handleMiniCartAttri';
 import MiniCartImageGallery from './MiniCartImageGallery';
 import MiniCartPrices from './MiniCartPrices';
@@ -35,7 +35,7 @@ const ItemsContainer = styled.div`
 `;
 const CartItemsContainerBox = styled.div`
   max-height: 350px;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 `;
 // Cart Item
@@ -114,6 +114,9 @@ const MinusBox = styled.div`
   font-weight: 200;
   border: 1px solid #1d1f22;
   cursor: pointer;
+`;
+const MinusItem = styled.div`
+  margin-bottom: 10px;
 `;
 // Current Product Quantity
 const Quantity = styled.div`
@@ -283,17 +286,17 @@ class MiniCart extends Component {
     cart = this.props.cart;
     // QTy is quantity
     // Add Qty and update qty in  redux store
-    const AddQty = (id, qty) => {
+    const AddQty = (data, qty) => {
       const newQty = qty + 1;
-      this.props.changeQuantityDetail(id, newQty);
+      this.props.changeQuantityDetail(data, newQty);
     };
     // Deduct Qty and Delete from cart when qty becomes 1
-    const RemoveQty = (id, qty) => {
+    const RemoveQty = (qty, data) => {
       const newQty = qty - 1;
       if (qty > 1) {
-        this.props.changeQuantityDetail(id, newQty);
+        this.props.changeQuantityDetail(data, newQty);
       } else if (qty === 1) {
-        this.props.removeProduct(id);
+        this.props.removeProduct(data);
       }
     };
 
@@ -321,16 +324,16 @@ class MiniCart extends Component {
                   <ItemPrice>
                     <MiniCartPrices data={data.prices} qty={data.qty} />
                   </ItemPrice>
-                  <HandleMiniCartAttri id={data.id} />
+                  <HandleMiniCartAttri id={data.id} attri={data.selectedAttributes} />
                 </LeftItems>
                 <RightContainer>
                   <RightItems>
                     {/* Controls */}
                     <AdjPrice>
-                      <PlusBox onClick={() => AddQty(data.id, data.qty)}>+</PlusBox>
+                      <PlusBox onClick={() => AddQty(data, data.qty)}>+</PlusBox>
                       <Quantity>{data.qty}</Quantity>
-                      <MinusBox onClick={() => RemoveQty(data.id, data.qty)}>
-                        <span style={{ marginBottom: '10px' }}>-</span>
+                      <MinusBox onClick={() => RemoveQty(data.qty, data)}>
+                        <MinusItem>-</MinusItem>
                       </MinusBox>
                     </AdjPrice>
                     {/* Gallery */}
@@ -354,7 +357,7 @@ class MiniCart extends Component {
         </Total>
         {/* View and Checkout Buttons */}
         <BottomButtons>
-          <Link to="/cart" style={{ textDecoration: 'none' }}>
+          <Link to="/cart" className="linkto" onClick={() => this.props.changeCartCondtion(false)}>
             <ViewBagButton>VIEW BAG</ViewBagButton>
           </Link>
           <OrderButton>CHECKOUT</OrderButton>
@@ -376,12 +379,15 @@ const mapStateProps = state => {
 // Function
 const mapDispatchToProps = dispatch => {
   return {
-    changeQuantityDetail: (id, value) => {
-      dispatch(adjustQty(id, value));
+    changeQuantityDetail: (data, value) => {
+      dispatch(adjustQty(data, value));
     },
 
-    removeProduct: id => {
-      dispatch(removeFromCart(id));
+    removeProduct: data => {
+      dispatch(removeFromCart(data));
+    },
+    changeCartCondtion: data => {
+      dispatch(changeCart(data));
     },
   };
 };

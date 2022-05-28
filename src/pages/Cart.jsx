@@ -16,16 +16,15 @@ const Container = styled.div`
   padding-top: 80px;
   display: flex;
   flex-direction: column;
+  min-height: 768px;
   height: auto;
   padding-bottom: 100px;
   @media (max-width: 1366px) {
     padding: 0 50px;
-    padding-bottom: 100px;
     padding-top: 80px;
   }
   @media (max-width: 1280px) {
     padding: 0 25px;
-    padding-bottom: 100px;
     padding-top: 80px;
   }
 `;
@@ -224,7 +223,7 @@ class Cart extends Component {
   fetchCurrenciesForStore = async () => {
     const response = await GetAllCurrencies().catch(err => console.log(err));
     this.setState({
-      currencies: response,
+      currencies: response.currencies,
     });
   };
   // Loads data and sets state when first rendered
@@ -303,7 +302,7 @@ class Cart extends Component {
     // Currency Handler To determine the current symbol been utilizes
     const currentCurrency = this.props.currency;
     const CurrencyIndex = currentCurrency.currency;
-    const currencies = this.state.currencies.currencies;
+    const currencies = this.state.currencies;
     let ArrayCurrencies = [];
     if (Array.isArray(currencies) === true) {
       ArrayCurrencies = currencies.map(item => item.symbol);
@@ -328,7 +327,7 @@ class Cart extends Component {
                 <ItemPrice>
                   <CartPrices data={data.prices} qty={data.qty} />
                 </ItemPrice>
-                <HandleCartAttributes id={data.id} />
+                <HandleCartAttributes id={data.id} attri={data.selectedAttributes} />
               </LeftItems>
               <RightContainer>
                 {/* Controls */}

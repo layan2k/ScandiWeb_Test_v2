@@ -2,9 +2,10 @@
 // Imports
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import Navbar from '../components/NavBar';
+import { GetAllCategories } from '../queries/GetAllCategories';
 import AllCategory from './AllCategory';
 import Cart from './Cart';
 import ProductPage from './ProductPage';
@@ -23,13 +24,31 @@ class Home extends Component {
     super(props);
     this.state = {
       cartOpenCondition: false,
+      categoriesData: [],
     };
   }
+
+  fetchAllCategories = async () => {
+    const response = await GetAllCategories().catch(err => console.log(err));
+    if (response != 'undefined') {
+      this.setState({
+        categoriesData: response.categories,
+      });
+    }
+  };
+
+  setCategory = () => {
+    const categories = this.state.categoriesData;
+    let itemArray = [];
+    categories.forEach(item => itemArray.push(item.name));
+    this.changeCurrentCategory(itemArray[0]);
+  };
   // Checks if the cart is opened when page Renders
   componentDidMount() {
     this.setState({
       cartOpenCondition: this.props.cartCondition.isCartOpened,
     });
+    this.fetchAllCategories();
   }
   //Updates the state when thw cart is enable therefore allowing a background to dynamically render
   componentDidUpdate(prevProps) {
@@ -37,6 +56,7 @@ class Home extends Component {
       this.setState({
         cartOpenCondition: this.props.cartCondition.isCartOpened,
       });
+      this.fetchAllCategories();
     }
   }
 
@@ -44,22 +64,44 @@ class Home extends Component {
     // variable that handle data
     const category = this.props.category;
     const cartCondition = this.state.cartOpenCondition;
+    const categories = this.state.categoriesData;
+    let itemArray = [];
+    categories.forEach(item => itemArray.push(item.name));
+    let defaultPage;
+    if (itemArray.length > 0) {
+      defaultPage = itemArray[0];
+      console.log(itemArray);
+    }
+
     return (
-      <Router>
+      <>
         <Navbar category={category.category} />
         <Container cart={cartCondition}>
           <Routes>
-            <Route path="/" element={<AllCategory category={category.category} />} />
-            <Route path="/product/:id" element={<ProductPage />} />
-            <Route path="/cart" element={<Cart />} />
+            <Route path="/" element={<Navigate to={`category/${defaultPage}`} />} />
+            <Route
+              sensitive
+              path="category/:id"
+              element={<AllCategory category={category.category} />}
+            />
+            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="product/:id" element={<ProductPage />} />
+            <Route path="cart" element={<Cart />} />
           </Routes>
         </Container>
-      </Router>
+      </>
     );
   }
 }
 
 // Connection to the redux  store
+const mapDispatchToProps = dispatch => {
+  return {
+    changeCurrentCategory: data => {
+      dispatch({ type: 'CHANGE_CATEGORY', data: data });
+    },
+  };
+};
 const mapStateProps = state => {
   return {
     category: state.category,
@@ -67,4 +109,4 @@ const mapStateProps = state => {
   };
 };
 
-export default connect(mapStateProps)(Home);
+export default connect(mapStateProps, mapDispatchToProps)(Home);

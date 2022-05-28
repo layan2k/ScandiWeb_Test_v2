@@ -78,23 +78,29 @@ class TextAttrBox extends Component {
       selectedColor: 0,
     };
   }
-  // Method loads attributes that have been chosen by the user
-  setAttributes = () => {
+  setAttributesP = () => {
     const name = this.props.name;
-    const attributes = this.props.attributes;
-    const id = `${name}+${this.props.id}`;
-    attributes.map(item =>
-      id === item.id
-        ? this.setState({
-            selectedText: item.textattri,
-            selectedColor: item.colorattr ? item.colorattr : 0,
-          })
-        : item
-    );
+    const someValueArray = this.state;
+    const combineAttributes = {
+      name,
+      ...someValueArray,
+    };
+
+    const attributes = combineAttributes;
+
+    this.props.setAttributes(attributes);
   };
   // Loads the cart states to the users chosen attributes on render
   componentDidMount() {
-    this.setAttributes();
+    this.setAttributesP();
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.selectedText !== prevState.selectedText ||
+      this.state.selectedColor !== prevState.selectedColor
+    ) {
+      this.setAttributesP();
+    }
   }
 
   render() {
@@ -113,14 +119,12 @@ class TextAttrBox extends Component {
     // Handles the  Text Selction Choices and stores that information in the redux store
     const changeSizeStateIndex = (number, value) => {
       const newid = `${name}+${this.props.id}`;
-      this.props.changeTextDetail(newid, number);
       this.setState({
         selectedText: number,
       });
     };
     // Handles the user Color Selection Choices and stores that information in the redux store
     const changeColorStateIndex = number => {
-      this.props.changeColorDetails(this.props.id, number);
       this.setState({
         selectedColor: number,
       });
@@ -169,24 +173,4 @@ class TextAttrBox extends Component {
   }
 }
 
-// Loading the users defined attributes from the Redux Store
-const mapStateProps = state => {
-  return {
-    attributes: state.shop.attributes,
-  };
-};
-
-// Contains the functions to update or attributes in the redux store
-const mapDispatchToProps = dispatch => {
-  return {
-    changeTextDetail: (id, value) => {
-      dispatch(addTextAttri(id, value));
-    },
-    changeColorDetails: (id, value) => {
-      dispatch(addColorAttri(id, value));
-    },
-  };
-};
-
-// Connect redux to the TextAttrBox Component
-export default connect(mapStateProps, mapDispatchToProps)(TextAttrBox);
+export default TextAttrBox;

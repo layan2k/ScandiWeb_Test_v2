@@ -1,7 +1,7 @@
 //  PLP - product listing page
 // Imports
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Card from '../components/ProductsMainPage/ProductCard';
 import { GetCategory } from '../queries/GetCategory';
@@ -54,6 +54,11 @@ const LoadingText = styled.span`
   font-size: 40px;
 `;
 
+// Get id and useNavigate from router Custom Functiom
+const withParams = Component => {
+  return props => <Component {...props} params={useParams()} />;
+};
+
 // Class Component
 class AllCategory extends Component {
   constructor(props) {
@@ -67,7 +72,8 @@ class AllCategory extends Component {
   // Method to call our API Data
 
   fetchProducts = async () => {
-    const response = await GetCategory(this.props.category).catch(err => {
+    const { id } = this.props.params;
+    const response = await GetCategory(id).catch(err => {
       console.log(err);
     });
     this.setState({
@@ -76,15 +82,9 @@ class AllCategory extends Component {
     });
   };
 
-  // fetching products for the redux store
-  fetchProductsForStore = async () => {
-    const response = await GetCategory('all').catch(err => console.log(err));
-    this.props.addProducts(response.category.products);
-  };
   // renders data when page loads
   componentDidMount() {
     this.fetchProducts();
-    this.fetchProductsForStore();
   }
   // dynamically updates date when props change
   async componentDidUpdate(prevProps) {
@@ -120,14 +120,5 @@ class AllCategory extends Component {
     }
   }
 }
-// connects to the redux store and stores all products from the API
-//  So that they can be utilized in the cars
-const mapDispatchToProps = dispatch => {
-  return {
-    addProducts: data => {
-      dispatch({ type: 'ADD_PRODUCTS', data: data });
-    },
-  };
-};
 
-export default connect(null, mapDispatchToProps)(AllCategory);
+export default withParams(AllCategory);

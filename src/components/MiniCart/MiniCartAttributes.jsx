@@ -75,23 +75,20 @@ class MiniCartAttributes extends Component {
     };
   }
   // Method loads attributes that have been chosen by the user
+
   setAttributes = () => {
     const name = this.props.name;
     const attributes = this.props.attributes;
-    const id = `${name}+${this.props.id}`;
-    attributes.map(item =>
-      id === item.id
-        ? this.setState({
-            selectedText: item.textattri,
-            selectedColor: item.colorattr ? item.colorattr : 0,
-          })
-        : item
-    );
+    const getAttribute = attributes.filter(item => name === item.name);
+    this.setState({
+      selectedColor: getAttribute[0].selectedColor,
+      selectedText: getAttribute[0].selectedText,
+    });
   };
   // Loads the cart states to the users chosen attributes on render
-  componentDidMount() {
+  componentDidMount = () => {
     this.setAttributes();
-  }
+  };
 
   render() {
     // Variables
@@ -140,11 +137,5 @@ class MiniCartAttributes extends Component {
   }
 }
 
-// Loading the users defined attributes from the Redux Store
-const mapStateProps = state => {
-  return {
-    attributes: state.shop.attributes,
-  };
-};
 // Export the Component and Connecting to the Redux store.
-export default connect(mapStateProps)(MiniCartAttributes);
+export default MiniCartAttributes;

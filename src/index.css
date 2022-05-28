@@ -1,19 +1,19 @@
 * {
-  scroll-behavior:smooth;
+  scroll-behavior: smooth;
   box-sizing: border-box;
 }
 body {
   margin: 0;
   max-width: 1440px;
   overflow-x: hidden;
-  color: #1D1F22;
+  color: #1d1f22;
   font-family: 'Raleway', sans-serif;
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
-   -khtml-user-select: none; /* Konqueror HTML */
-     -moz-user-select: none; /* Old versions of Firefox */
-      -ms-user-select: none; /* Internet Explorer/Edge */
-          user-select: none;
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
 }
 
 @media only screen and (max-width: 1366px) {
@@ -53,7 +53,7 @@ body {
   z-index: -1;
 }
 
+/* For removing text decoration on our Link tags */
 .linkto {
   text-decoration: none;
 }
-

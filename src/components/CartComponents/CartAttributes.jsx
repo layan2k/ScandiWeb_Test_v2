@@ -74,24 +74,22 @@ class CartAttributes extends Component {
       selectedColor: 0,
     };
   }
+
   // Method loads attributes that have been chosen by the user
+
   setAttributes = () => {
     const name = this.props.name;
-    const attributes = this.props.attributes;
-    const id = `${name}+${this.props.id}`;
-    attributes.map(item =>
-      id === item.id
-        ? this.setState({
-            selectedText: item.textattri,
-            selectedColor: item.colorattr ? item.colorattr : 0,
-          })
-        : item
-    );
+    const attributes = this.props.attri;
+    const getAttribute = attributes.filter(item => name === item.name);
+    this.setState({
+      selectedColor: getAttribute[0].selectedColor,
+      selectedText: getAttribute[0].selectedText,
+    });
   };
   // Loads the cart states to the users chosen attributes on render
-  componentDidMount() {
+  componentDidMount = () => {
     this.setAttributes();
-  }
+  };
 
   render() {
     // Variables

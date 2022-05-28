@@ -22,55 +22,25 @@ export const changeCart = data => {
   };
 };
 
-export const addToCart = itemID => {
+export const addToCart = data => {
   return {
     type: actionTypes.ADD_TO_CART,
-    payload: {
-      id: itemID,
-    },
-  };
-};
-
-export const addProducts = data => {
-  return {
-    type: actionTypes.ADD_PRODUCTS,
     data,
   };
 };
 
-export const removeFromCart = itemID => {
+export const removeFromCart = data => {
   return {
     type: actionTypes.REMOVE_FROM_CART,
-    payload: {
-      id: itemID,
-    },
+    data,
   };
 };
-export const adjustQty = (itemID, value) => {
+export const adjustQty = (data, value) => {
   return {
     type: actionTypes.ADJUST_QTY,
     payload: {
-      id: itemID,
+      data: data,
       qty: value,
-    },
-  };
-};
-export const addColorAttri = (itemID, value) => {
-  return {
-    type: actionTypes.ADD_COLOR_ATTRIBUTE,
-    payload: {
-      id: itemID,
-      colorattri: value,
-    },
-  };
-};
-
-export const addTextAttri = (itemID, value) => {
-  return {
-    type: actionTypes.ADD_TEXT_ATTRIBUTE,
-    payload: {
-      id: itemID,
-      textattri: value,
     },
   };
 };

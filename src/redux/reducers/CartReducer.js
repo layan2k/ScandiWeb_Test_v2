@@ -4,20 +4,10 @@
 import * as actionTypes from '../actionTypes/actionTypes';
 
 // Updates Local Storage
-const updateCart = (data, attributesdata) => {
+const updateCart = data => {
   localStorage.setItem('cart', JSON.stringify(data));
-  localStorage.setItem('cart-attributes', JSON.stringify(attributesdata));
 };
 
-// Retrieves State from local storage
-const initialProduct = () => {
-  const Getproducts = localStorage.getItem('products');
-  let products = [];
-  if (Getproducts) {
-    products = JSON.parse(Getproducts);
-  }
-  return products;
-};
 // Retrieves State from local storage
 const initialCart = () => {
   const GetCart = localStorage.getItem('cart');
@@ -27,106 +17,58 @@ const initialCart = () => {
   }
   return cart;
 };
-// Retrieves Data from local storage
-const initialAttributes = () => {
-  const GetAttributes = localStorage.getItem('cart-attributes');
-  let attributes = [];
-  if (GetAttributes) {
-    attributes = JSON.parse(GetAttributes);
-  }
-  return attributes;
+
+// Evaaluates if our object attributes are equal
+const arrayEqual = (a1, a2) => {
+  const evaluation = JSON.stringify(a1.map(item => item)) === JSON.stringify(a2.map(item => item));
+  return evaluation;
 };
 
 // initial Redux Store State
 const initialState = {
-  products: initialProduct(), //{id, title, description, price, img}
   cart: initialCart(), // {id, title, description, price, img}
-  attributes: initialAttributes(), //{id, attributes}
 };
 
 // Reducer
 export const CartReducer = (state = initialState, action) => {
   // Updates local storage with the stores state
-  updateCart(state.cart, state.attributes);
+  updateCart(state.cart);
   // Switch statements for handling actions when they're called
   switch (action.type) {
-    case actionTypes.ADD_PRODUCTS:
-      return {
-        ...state,
-        products: action.data === state.products ? state.products : action.data,
-      };
     // Add to cart action
     case actionTypes.ADD_TO_CART:
-      const item = state.products.find(prod => prod.id === action.payload.id);
-      const inCart = state.cart.find(item => (item.id === action.payload.id ? true : false));
+      const inCart = state.cart.find(item =>
+        item.id === action.data.id &&
+        arrayEqual(item.selectedAttributes, action.data.selectedAttributes)
+          ? true
+          : false
+      );
+      const product = action.data;
       return {
         ...state,
         cart: inCart
-          ? state.cart.map(item =>
-              item.id === action.payload.id ? { ...item, qty: item.qty + 1 } : item
+          ? state.cart.map(x =>
+              x.id === action.data.id &&
+              arrayEqual(x.selectedAttributes, action.data.selectedAttributes)
+                ? { ...x, qty: x.qty + 1 }
+                : x
             )
-          : [...state.cart, { ...item, qty: 1 }],
+          : [...state.cart, { ...product, qty: 1 }],
       };
     // Remove To cart Actiom
     case actionTypes.REMOVE_FROM_CART:
       return {
         ...state,
-        cart: state.cart.filter(item => item.id !== action.payload.id),
+        cart: state.cart.filter(item => item !== action.data),
       };
     // Adjust QTY action
     case actionTypes.ADJUST_QTY:
       return {
         ...state,
         cart: state.cart.map(item =>
-          item.id === action.payload.id ? { ...item, qty: action.payload.qty } : item
+          item === action.payload.data ? { ...item, qty: action.payload.qty } : item
         ),
       };
-    // Add Color attributes action
-    case actionTypes.ADD_COLOR_ATTRIBUTE:
-      const inColorAttri = state.attributes.find(item =>
-        item.id === action.payload.id ? true : false
-      );
-      return {
-        ...state,
-        attributes: inColorAttri
-          ? state.attributes.map(item =>
-              item.id === action.payload.id
-                ? {
-                    ...item,
-                    colorattr: action.payload.colorattri,
-                  }
-                : item
-            )
-          : [
-              ...state.attributes,
-              {
-                id: action.payload.id,
-                colorattr: action.payload.colorattri,
-              },
-            ],
-      };
-    // Add text attribute actions
-    case actionTypes.ADD_TEXT_ATTRIBUTE:
-      const inTextAttri = state.attributes.find(item =>
-        item.id === action.payload.id ? true : false
-      );
-      return {
-        ...state,
-        attributes: inTextAttri
-          ? state.attributes.map(item =>
-              item.id === action.payload.id
-                ? { ...item, textattri: action.payload.textattri }
-                : item
-            )
-          : [
-              ...state.attributes,
-              {
-                id: action.payload.id,
-                textattri: action.payload.textattri,
-              },
-            ],
-      };
-
     default:
       return state;
   }

@@ -14,6 +14,25 @@ const Container = styled.div`
 
 // Component Entry
 class PDPOptions extends Component {
+  constructor(props) {
+    super(props);
+    this.AttributeArray = [];
+    this.state = {
+      arrayItems: this.AttributeArray,
+    };
+  }
+
+  getAttributes = data => {
+    const InArray = this.AttributeArray.find(item => (item.name === data.name ? true : false));
+    if (InArray) {
+      this.AttributeArray = this.AttributeArray.filter(object => object.name != data.name);
+      this.AttributeArray.push(data);
+    } else {
+      this.AttributeArray.push(data);
+    }
+    this.props.handleAttributes(this.AttributeArray);
+  };
+
   render() {
     const data = this.props.data;
     const id = this.props.iddet;
@@ -26,7 +45,14 @@ class PDPOptions extends Component {
     return (
       <Container>
         {verifiedArray.map((data, i) => (
-          <TextAttrBox key={i} data={data.items} type={data.type} name={data.name} id={id} />
+          <TextAttrBox
+            key={i}
+            data={data.items}
+            type={data.type}
+            name={data.name}
+            id={id}
+            setAttributes={this.getAttributes}
+          />
         ))}
       </Container>
     );

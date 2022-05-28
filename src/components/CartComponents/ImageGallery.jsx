@@ -2,6 +2,8 @@
 // imports
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import LeftVector from '../../assets/LeftVector.svg';
+import RightVector from '../../assets/RightVector.svg';
 
 // Main container for our Image
 const Conatainer = styled.div`
@@ -98,10 +100,10 @@ class ImageGallery extends Component {
         {NumberOfImages > 1 && (
           <ChangeImageControls>
             <ChangeImageLeft onClick={() => ChangeLeft()}>
-              <ControlIcons src="/assets/LeftVector.svg" />
+              <ControlIcons src={LeftVector} />
             </ChangeImageLeft>
             <ChangeImageRight onClick={() => ChangeRight()}>
-              <ControlIcons src="/assets/RIghtVector.svg" />
+              <ControlIcons src={RightVector} />
             </ChangeImageRight>
           </ChangeImageControls>
         )}

@@ -3,11 +3,19 @@
 // Imports
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { GetAllCategories } from '../queries/GetAllCategories';
 import { GetAllCurrencies } from '../queries/GetAllCurrencies';
 import { changeCart } from '../redux/action/actions';
 import MiniCart from './MiniCart/MiniCart';
+import './Navbar.css';
+// Import Images
+import svg_3 from '../assets/svg_3.svg';
+import svg_2 from '../assets/svg_2.svg';
+import Vector from '../assets/Vector.svg';
+import Vector2 from '../assets/Vector2.svg';
+import Vector3 from '../assets/Vector3.svg';
 
 // Styling
 const Container = styled.div`
@@ -60,21 +68,21 @@ const Right = styled.div`
 
 const MenuItemContainer = styled.div`
   cursor: pointer;
-  margin-right: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
   height: 80px;
-  border-bottom: ${props => (props.allcat ? '2px solid #5ECE7B' : '')};
 `;
 
-const MenuItem = styled.div`
+const MenuItem = styled.span`
   font-family: 'Raleway';
   font-size: 16px;
   font-weight: 400;
-  font-size: ${props => (props.allcat ? '16px' : '')};
-  color: ${props => (props.allcat ? '#5ECE7B' : '')};
+  text-transform: uppercase;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 // Center logo (icons)
@@ -133,6 +141,7 @@ const ListItem = styled.li`
   justify-content: center;
   align-items: center;
   list-style: none;
+  font-weight: 500;
   width: 114px;
   height: 45px;
   &:hover {
@@ -214,9 +223,10 @@ class Navbar extends Component {
     this.state = {
       isOpen: false,
       arrow: false,
-      cart: false,
+      cart: this.props.cartCondition,
       quantity: 0,
       currencies: [],
+      categoriesData: [],
     };
     // Ref for clicks outside Container
     this.wrapperRef = React.createRef();
@@ -239,11 +249,19 @@ class Navbar extends Component {
     });
   };
 
+  fetchAllCategories = async () => {
+    const response = await GetAllCategories().catch(err => console.log(err));
+    this.setState({
+      categoriesData: response.categories,
+    });
+  };
+
   // Loads data when the page is firt renderd
   // ,sets  states
   // and monitors mouse movement and clicks
   componentDidMount() {
     this.fetchCurrenciesForStore();
+    this.fetchAllCategories();
     const cart = this.props.cart;
     let count = 0;
     cart.forEach(item => {
@@ -253,6 +271,7 @@ class Navbar extends Component {
 
     this.setState({
       quantity: count,
+      cart: this.props.cartCondition,
     });
   }
 
@@ -260,8 +279,12 @@ class Navbar extends Component {
   // ,dynamically updates  states
   // and monitors mouse movement and clicks
   componentDidUpdate(prevProps) {
-    if (this.props.cart !== prevProps.cart) {
+    if (
+      this.props.cart !== prevProps.cart ||
+      this.props.cartCondition !== prevProps.cartCondition
+    ) {
       this.fetchCurrenciesForStore();
+      this.fetchAllCategories();
       const cart = this.props.cart;
       let count = 0;
       cart.forEach(item => {
@@ -271,6 +294,7 @@ class Navbar extends Component {
 
       this.setState({
         quantity: count,
+        cart: this.props.cartCondition,
       });
     }
   }
@@ -301,7 +325,8 @@ class Navbar extends Component {
       if (BoolValue) {
         this.setState({ isOpen: false, arrow: false });
       } else {
-        this.setState({ isOpen: true, arrow: true, cart: false });
+        this.setState({ isOpen: true, arrow: true });
+        this.props.changeCartCondtion(false);
       }
     };
 
@@ -309,28 +334,14 @@ class Navbar extends Component {
     const carttoggle = () => {
       const BoolValue = this.state.cart;
       if (BoolValue) {
-        this.setState({ cart: false });
         this.props.changeCartCondtion(false);
       } else {
-        this.setState({ cart: true, isOpen: false, arrow: false });
+        this.setState({ isOpen: false, arrow: false });
         this.props.changeCartCondtion(true);
       }
     };
 
-    // Function to show active tab
-    let { allcat, clothescat, techcat } = false;
-
-    const activetab = () => {
-      const currentcategory = this.props.category;
-      if (currentcategory === 'all') {
-        allcat = true;
-      } else if (currentcategory === 'clothes') {
-        clothescat = true;
-      } else {
-        techcat = true;
-      }
-    };
-    activetab();
+    const categories = this.state.categoriesData;
 
     // Function that get the current set Currency from the reducer
     // And Sets the current symbol on Display
@@ -345,27 +356,31 @@ class Navbar extends Component {
       <Container>
         <Wrapper>
           <Left>
-            <MenuItemContainer allcat={allcat} onClick={() => this.changeCategory('all')}>
-              <MenuItem allcat={allcat}> ALL </MenuItem>
-            </MenuItemContainer>
-            <MenuItemContainer allcat={clothescat} onClick={() => this.changeCategory('clothes')}>
-              <MenuItem allcat={clothescat}> CLOTHES </MenuItem>
-            </MenuItemContainer>
-            <MenuItemContainer allcat={techcat} onClick={() => this.changeCategory('tech')}>
-              <MenuItem allcat={techcat}> TECH </MenuItem>
-            </MenuItemContainer>
+            {categories.map((data, i) => {
+              return (
+                <NavLink
+                  key={i}
+                  to={`/category/${data.name}`}
+                  className={nav => (nav.isActive ? 'active' : 'navlinkto')}
+                >
+                  <MenuItemContainer onClick={() => this.changeCategory(data.name)}>
+                    <MenuItem> {data.name}</MenuItem>
+                  </MenuItemContainer>
+                </NavLink>
+              );
+            })}
           </Left>
           <Link to={'/'}>
             <Center>
-              <MainImage src="/assets/svg_3.svg" />
-              <BackGroundicon src="/assets/svg_2.svg" />
+              <MainImage src={svg_3} />
+              <BackGroundicon src={svg_2} />
             </Center>
           </Link>
           <Right>
             <DropDownConatiner onClick={toggling} ref={this.wrapperRef}>
               <DropDownHeader>
                 {ArrayCurrencies[CurrencyIndex]}{' '}
-                <DownIcon src="/assets/Vector.svg" rotatearrow={this.state.arrow} />
+                <DownIcon src={Vector} rotatearrow={this.state.arrow} />
               </DropDownHeader>
               {this.state.isOpen && (
                 <DropDownListContainer>
@@ -381,10 +396,10 @@ class Navbar extends Component {
             </DropDownConatiner>
             <CartIconContainer ref={this.cartRef}>
               <InCart onClick={carttoggle}>{this.state.quantity}</InCart>
-              <CartIcon onClick={carttoggle} src="/assets/Vector2.svg" />
+              <CartIcon onClick={carttoggle} src={Vector2} />
               <CirclesConatiner onClick={carttoggle}>
-                <CircleIcon src="/assets/Vector3.svg" />
-                <CircleIcon src="/assets/Vector3.svg" />
+                <CircleIcon src={Vector3} />
+                <CircleIcon src={Vector3} />
               </CirclesConatiner>
               {this.state.cart && (
                 <CartCard>
@@ -403,6 +418,7 @@ const mapStateProps = state => {
   return {
     currency: state.currency,
     cart: state.shop.cart,
+    cartCondition: state.isCartCondition.isCartOpened,
   };
 };
 

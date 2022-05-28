@@ -10,10 +10,13 @@ import PDPOptions from '../components/ProductPageComponents/PDPOptions';
 import { getProductsById } from '../queries/getProductById';
 import { addToCart } from '../redux/action/actions';
 import { Markup } from 'interweave';
+import TextAttrBox from '../components/ProductPageComponents/AttrBox';
 
 // Main Comtainer
 const Container = styled.div`
   height: auto;
+  position: relative;
+  z-index: ${props => (props.minicartCurrent ? -1 : 0)};
 `;
 // Wrapper
 const Wrapper = styled.div`
@@ -37,7 +40,7 @@ const Left = styled.div`
   display: flex;
   flex-direction: column;
   height: 400px;
-  overflow-y: ${props => (props.imageno ? 'scroll' : 'hidden')};
+  overflow-y: auto;
   overflow-x: hidden;
   align-items: center;
 `;
@@ -88,6 +91,12 @@ const Price = styled.div`
   font-family: 'Raleway';
   font-weight: 700;
   font-size: 24px;
+`;
+// PDP Container
+const PdpContainer = styled.div`
+  margin-top: 43px;
+  display: flex;
+  flex-direction: column;
 `;
 // Add to Cart Button
 const AddToButton = styled.div`
@@ -150,6 +159,7 @@ const Desc = styled.div`
   color: #1d1f22;
   max-height: 200px;
   margin-bottom: 100px;
+  overflow: auto;
 `;
 
 // Get id and useNavigate from router Custom Functiom
@@ -161,10 +171,12 @@ const withParams = Component => {
 class ProductPage extends Component {
   constructor(props) {
     super(props);
+    this.AttributeArray = [];
     this.state = {
       data: [],
       images: [],
       position: 0,
+      attributes: [],
     };
     this.fetchData = this.fetchData.bind(this);
   }
@@ -177,6 +189,23 @@ class ProductPage extends Component {
       images: response.product.gallery,
     });
   };
+
+  setAttributes = data => {
+    const InArray = this.AttributeArray.find(item => (item.name === data.name ? true : false));
+    if (InArray) {
+      this.AttributeArray = this.AttributeArray.filter(object => object.name != data.name);
+      this.AttributeArray.push(data);
+      this.setState({
+        attributes: this.AttributeArray,
+      });
+    } else {
+      this.AttributeArray.push(data);
+      this.setState({
+        attributes: this.AttributeArray,
+      });
+    }
+  };
+
   // API Product Call byProduct ID , require id as an input
   componentDidMount() {
     this.fetchData();
@@ -188,10 +217,12 @@ class ProductPage extends Component {
     let ScrollImg = false;
     const data = this.state.data;
     const images = this.state.images;
+    const miniCartCondition = this.props.minicart;
+    const attributes = data.attributes;
+    const id = data.id;
     if (images.length > 1) {
       ScrollImg = true;
     }
-    console.log(images.length);
     const prices = data.prices;
     description = String(data.description);
     const currentCurrency = this.props.currency.currency;
@@ -199,18 +230,27 @@ class ProductPage extends Component {
     let PriceText = '';
     if (Array.isArray(prices)) {
       PriceText = prices[currentCurrency].currency.symbol + prices[currentCurrency].amount;
-    } else {
-      console.log('loading...');
+    }
+
+    let verifiedAttributeArray = [];
+    if (Array.isArray(attributes)) {
+      verifiedAttributeArray = attributes;
     }
 
     //Send Item To Cart Function
     const SendCart = data => {
-      this.props.addToCart(data);
+      const attributes = this.state.attributes;
+      const payload = {
+        ...data,
+        selectedAttributes: attributes,
+      };
+      Object.freeze(payload);
+      this.props.addToCart(payload);
     };
 
     if (data.inStock === true) {
       return (
-        <Container>
+        <Container minicartCurrent={miniCartCondition}>
           <Wrapper>
             {/* Left Side */}
             <Left imageno={ScrollImg}>
@@ -237,11 +277,25 @@ class ProductPage extends Component {
             <Right>
               <Title>{data.brand}</Title>
               <ProductName>{data.name}</ProductName>
-              <PDPOptions data={data.attributes} iddet={data.id} />
+              {/* Attributes  */}
+              <PdpContainer>
+                {verifiedAttributeArray.map((data, i) => (
+                  <TextAttrBox
+                    key={i}
+                    data={data.items}
+                    type={data.type}
+                    name={data.name}
+                    id={id}
+                    setAttributes={this.setAttributes}
+                  />
+                ))}
+              </PdpContainer>
+              {/* Price */}
               <PriceHeading>PRICE:</PriceHeading>
               <Price>{PriceText}</Price>
-              <AddToButton onClick={() => SendCart(data.id)}>ADD TO CART</AddToButton>
+              <AddToButton onClick={() => SendCart(data)}>ADD TO CART</AddToButton>
               <BackToShopText onClick={() => this.props.navigate('/')}>Back To Shop</BackToShopText>
+              {/* Description */}
               <Desc>
                 <Markup content={description} />
               </Desc>
@@ -297,12 +351,13 @@ const mapStateProps = state => {
   return {
     currency: state.currency,
     products: state.shop.product,
+    minicart: state.isCartCondition.isCartOpened,
   };
 };
 // Cart dispatching function to the redux store
 const mapDispatchToProps = dispatch => {
   return {
-    addToCart: id => dispatch(addToCart(id)),
+    addToCart: data => dispatch(addToCart(data)),
   };
 };
 
