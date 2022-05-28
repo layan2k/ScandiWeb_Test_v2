@@ -78,6 +78,7 @@ class TextAttrBox extends Component {
       selectedColor: 0,
     };
   }
+  // Handle User Attributes
   setAttributesP = () => {
     const name = this.props.name;
     const someValueArray = this.state;
@@ -94,6 +95,7 @@ class TextAttrBox extends Component {
   componentDidMount() {
     this.setAttributesP();
   }
+  // Rerenders when state is updated
   componentDidUpdate(prevProps, prevState) {
     if (
       this.state.selectedText !== prevState.selectedText ||

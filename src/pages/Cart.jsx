@@ -304,6 +304,7 @@ class Cart extends Component {
     const CurrencyIndex = currentCurrency.currency;
     const currencies = this.state.currencies;
     let ArrayCurrencies = [];
+    // Manage Currency Symbol
     if (Array.isArray(currencies) === true) {
       ArrayCurrencies = currencies.map(item => item.symbol);
     }

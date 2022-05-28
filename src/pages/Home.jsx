@@ -38,6 +38,7 @@ class Home extends Component {
   };
 
   setCategory = () => {
+    // Sets initial category
     const categories = this.state.categoriesData;
     let itemArray = [];
     categories.forEach(item => itemArray.push(item.name));

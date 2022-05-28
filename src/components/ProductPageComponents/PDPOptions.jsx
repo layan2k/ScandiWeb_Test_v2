@@ -22,6 +22,7 @@ class PDPOptions extends Component {
     };
   }
 
+  // Handle User attributes for Product Cart
   getAttributes = data => {
     const InArray = this.AttributeArray.find(item => (item.name === data.name ? true : false));
     if (InArray) {

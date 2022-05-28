@@ -197,6 +197,7 @@ class Card extends Component {
     }
   }
 
+  // Sets Product Predifined attributes when the send to cart function is called
   getAttributes = data => {
     this.setState({
       attributes: data,

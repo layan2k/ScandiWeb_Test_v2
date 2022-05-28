@@ -37,6 +37,9 @@ const CardContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 80px 56px;
+  @media (min-width: 2045px) {
+    gap: 113.62px 79.53px;
+  }
   grid-template-columns: auto auto auto;
   grid-template-areas:
     '. . .'

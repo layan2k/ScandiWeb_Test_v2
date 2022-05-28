@@ -408,6 +408,7 @@ class Navbar extends Component {
   }
 }
 
+// Export Component and connection to the redux Store
 const mapStateProps = state => {
   return {
     currency: state.currency,

@@ -52,12 +52,18 @@ const LeftImg = styled.div`
 // Center Image Design
 const Center = styled.div`
   margin-left: 10px;
+  @media (min-width: 2045px) {
+    margin-left: 200px;
+  }
 `;
 // Right Side Product Design
 const Right = styled.div`
   margin-left: 82px;
   display: flex;
   flex-direction: column;
+  @media (min-width: 2045px) {
+    margin-left: 400px;
+  }
 `;
 // Product Brand
 const Title = styled.div`
@@ -189,7 +195,7 @@ class ProductPage extends Component {
       images: response.product.gallery,
     });
   };
-
+  // Sets the users product choice(attributes)
   setAttributes = data => {
     const InArray = this.AttributeArray.find(item => (item.name === data.name ? true : false));
     if (InArray) {
@@ -237,7 +243,7 @@ class ProductPage extends Component {
       verifiedAttributeArray = attributes;
     }
 
-    //Send Item To Cart Function
+    //Send Item To Cart Function with attributes
     const SendCart = data => {
       const attributes = this.state.attributes;
       const payload = {
