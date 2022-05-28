@@ -34,9 +34,12 @@ const ItemsContainer = styled.div`
   margin-top: 55px;
 `;
 const CartItemsContainerBox = styled.div`
-  max-height: 350px;
+  max-height: 400px;
   overflow-y: auto;
   overflow-x: hidden;
+  @media (min-width: 1440px) {
+    max-height: 470px;
+  }
 `;
 // Cart Item
 const CartItemContainer = styled.div`
