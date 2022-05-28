@@ -64,21 +64,14 @@ class Home extends Component {
     // variable that handle data
     const category = this.props.category;
     const cartCondition = this.state.cartOpenCondition;
-    const categories = this.state.categoriesData;
-    let itemArray = [];
-    categories.forEach(item => itemArray.push(item.name));
-    let defaultPage;
-    if (itemArray.length > 0) {
-      defaultPage = itemArray[0];
-      console.log(itemArray);
-    }
+    const loadRoute = category.category;
 
     return (
       <>
         <Navbar category={category.category} />
         <Container cart={cartCondition}>
           <Routes>
-            <Route path="/" element={<Navigate to={`category/${defaultPage}`} />} />
+            <Route path="/" element={<Navigate to={`category/${loadRoute}`} />} />
             <Route
               sensitive
               path="category/:id"
