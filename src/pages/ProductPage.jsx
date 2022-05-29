@@ -22,19 +22,19 @@ const Container = styled.div`
 const Wrapper = styled.div`
   padding: 0 100px;
   padding-top: 73px;
-  padding-bottom: 50px;
+  padding-bottom: 30px;
   display: grid;
   grid-template-columns: 100px 1fr 1fr;
   justify-content: center;
   @media (max-width: 1366px) {
     padding: 0 50px;
     padding-top: 73px;
-    padding-bottom: 50px;
+    padding-bottom: 30px;
   }
   @media (max-width: 1280px) {
     padding: 0 25px;
     padding-top: 73px;
-    padding-bottom: 50px;
+    padding-bottom: 30px;
   }
 `;
 // Left Image Toggle Gallary Design
@@ -160,7 +160,7 @@ const Desc = styled.div`
   font-weight: 400;
   font-size: 16px;
   color: #1d1f22;
-  max-height: 200px;
+  max-height: 250px;
   margin-bottom: 100px;
   overflow: auto;
 `;
@@ -308,7 +308,7 @@ class ProductPage extends Component {
       );
     } else {
       return (
-        <Container>
+        <Container minicartCurrent={miniCartCondition}>
           <Wrapper>
             {/* Left Side */}
             <Left>
