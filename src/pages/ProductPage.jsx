@@ -23,7 +23,9 @@ const Wrapper = styled.div`
   padding: 0 100px;
   padding-top: 73px;
   padding-bottom: 50px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 100px 1fr 1fr;
+  justify-content: center;
   @media (max-width: 1366px) {
     padding: 0 50px;
     padding-top: 73px;
@@ -52,18 +54,13 @@ const LeftImg = styled.div`
 // Center Image Design
 const Center = styled.div`
   margin-left: 10px;
-  @media (min-width: 2045px) {
-    margin-left: 200px;
-  }
 `;
 // Right Side Product Design
 const Right = styled.div`
   margin-left: 82px;
   display: flex;
   flex-direction: column;
-  @media (min-width: 2045px) {
-    margin-left: 400px;
-  }
+  width: 300px;
 `;
 // Product Brand
 const Title = styled.div`
@@ -101,7 +98,7 @@ const Price = styled.div`
 // PDP Container
 const PdpContainer = styled.div`
   margin-top: 43px;
-  display: flex;
+  display: ${props => (props.ifavai ? 'flex' : 'none')};
   flex-direction: column;
 `;
 // Add to Cart Button
@@ -284,7 +281,7 @@ class ProductPage extends Component {
               <Title>{data.brand}</Title>
               <ProductName>{data.name}</ProductName>
               {/* Attributes  */}
-              <PdpContainer>
+              <PdpContainer ifavai={verifiedAttributeArray.length === 0 ? false : true}>
                 {verifiedAttributeArray.map((data, i) => (
                   <TextAttrBox
                     key={i}
