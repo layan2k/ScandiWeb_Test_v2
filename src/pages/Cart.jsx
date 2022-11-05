@@ -285,17 +285,17 @@ class Cart extends Component {
 
     // QTy is quantity
     // Add Qty and update qty in  redux store
-    const AddQty = (id, qty) => {
+    const AddQty = (data, qty) => {
       const newQty = qty + 1;
-      this.props.changeQuantityDetail(id, newQty);
+      this.props.changeQuantityDetail(data, newQty);
     };
     // Deduct Qty and Delete from cart when qty becomes 1
-    const RemoveQty = (id, qty) => {
+    const RemoveQty = (qty, data) => {
       const newQty = qty - 1;
       if (qty > 1) {
-        this.props.changeQuantityDetail(id, newQty);
+        this.props.changeQuantityDetail(data, newQty);
       } else if (qty === 1) {
-        this.props.removeProduct(id);
+        this.props.removeProduct(data);
       }
     };
 
@@ -334,9 +334,9 @@ class Cart extends Component {
                 {/* Controls */}
                 <RightItems>
                   <AdjPrice>
-                    <PlusBox onClick={() => AddQty(data.id, data.qty)}>+</PlusBox>
+                    <PlusBox onClick={() => AddQty(data, data.qty)}>+</PlusBox>
                     <Quantity>{data.qty}</Quantity>
-                    <MinusBox onClick={() => RemoveQty(data.id, data.qty)}>
+                    <MinusBox onClick={() => RemoveQty(data.qty, data)}>
                       <MinusPosition>-</MinusPosition>
                     </MinusBox>
                   </AdjPrice>
