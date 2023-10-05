@@ -1,7 +1,7 @@
 //  PLP - product listing page
 // Imports
 import React, { Component } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Card from '../components/ProductsMainPage/ProductCard';
 import { GetCategory } from '../queries/GetCategory';
@@ -59,7 +59,7 @@ const LoadingText = styled.span`
 
 // Get id and useNavigate from router Custom Functiom
 const withParams = Component => {
-  return props => <Component {...props} params={useParams()} />;
+  return props => <Component {...props} params={useParams()} location = {useLocation()} />;
 };
 
 // Class Component
